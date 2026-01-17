@@ -546,10 +546,12 @@ These modules exist but have no implemented methods (all commented out):
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `start(options)` | [ ] | |
-| `stop(options)` | [ ] | |
-| `group(name, options)` | [ ] | |
-| `groupEnd()` | [ ] | |
+| `start(options)` | [x] | |
+| `startChunk(options)` | [x] | |
+| `stop(options)` | [x] | |
+| `stopChunk(options)` | [x] | |
+| `group(name, options)` | [x] | |
+| `groupEnd()` | [x] | |
 
 ### FrameLocator (`lib/playwright/page/frame_locator.ex`)
 
@@ -627,7 +629,7 @@ These modules exist but have no implemented methods (all commented out):
 1. ~~`Mouse` module~~ DONE
 2. ~~`FrameLocator` module~~ DONE
 3. ~~`Page.pdf()`~~ DONE
-4. `Tracing` module
+4. ~~`Tracing` module~~ DONE
 
 ### Phase 5: Completeness
 1. Remaining Page query methods
