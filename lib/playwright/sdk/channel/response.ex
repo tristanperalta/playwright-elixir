@@ -81,6 +81,15 @@ defmodule Playwright.SDK.Channel.Response do
     cookies
   end
 
+  # Storage state response: %{cookies: [...], origins: [...]}
+  defp parse([{:cookies, cookies}, {:origins, origins}], _catalog) do
+    %{cookies: cookies, origins: origins}
+  end
+
+  defp parse([{:origins, origins}, {:cookies, cookies}], _catalog) do
+    %{cookies: cookies, origins: origins}
+  end
+
   defp parse([{:elements, value}], catalog) do
     Enum.map(value, fn %{guid: guid} -> Channel.Catalog.get(catalog, guid) end)
   end

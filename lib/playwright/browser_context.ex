@@ -587,8 +587,43 @@ defmodule Playwright.BrowserContext do
 
   # ---
 
-  # @spec storage_state(t(), String.t()) :: {:ok, storage_state()}
-  # def storage_state(context, path \\ nil)
+  @doc """
+  Returns storage state for this browser context, contains current cookies and local storage snapshot.
+
+  ## Options
+
+  - `:path` - Optional path to save the storage state as JSON file.
+
+  ## Examples
+
+      # Get storage state as map
+      state = BrowserContext.storage_state(context)
+
+      # Save to file
+      state = BrowserContext.storage_state(context, path: "/tmp/auth.json")
+
+  ## Returns
+
+  A map with `:cookies` and `:origins` keys.
+  """
+  @spec storage_state(t(), keyword()) :: map() | {:error, term()}
+  def storage_state(%BrowserContext{session: session} = context, options \\ []) do
+    case Channel.post(session, {:guid, context.guid}, :storage_state) do
+      {:error, _} = error ->
+        error
+
+      state when is_map(state) ->
+        case Keyword.get(options, :path) do
+          nil ->
+            state
+
+          path ->
+            json = Jason.encode!(state, pretty: true)
+            File.write!(path, json)
+            state
+        end
+    end
+  end
 
   # ---
 

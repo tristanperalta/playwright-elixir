@@ -345,7 +345,7 @@ This document tracks the implementation status of Playwright features in playwri
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `storageState(options)` | [ ] | !Priority - session persistence |
+| `storageState(options)` | [x] | Saves cookies and localStorage |
 | `close(options)` | [x] | |
 
 ### Events
@@ -619,7 +619,7 @@ These modules exist but have no implemented methods (all commented out):
 4. ~~`Locator.filter()`~~ DONE
 
 ### Phase 3: Session & State (Testing Infrastructure)
-1. `BrowserContext.storageState()`
+1. ~~`BrowserContext.storageState()`~~ DONE
 2. `BrowserContext.setGeolocation()`
 3. `Download.saveAs()` / `Download.path()`
 
