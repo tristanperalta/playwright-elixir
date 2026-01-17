@@ -678,12 +678,15 @@ defmodule Playwright.LocatorTest do
       on_exit(:ok, fn ->
         Playwright.Page.close(other_page)
       end)
+
       page
       |> Page.set_content("<div></div>")
 
       div_locator = Page.locator(page, "div")
+
       other_page
       |> Page.set_content("<span></span>")
+
       span_locator = Page.locator(other_page, "span")
 
       assert_raise ArgumentError, "Locators must belong to the same frame", fn ->

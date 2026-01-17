@@ -907,10 +907,11 @@ defmodule Playwright.Locator do
 
   This implements the `or` function for locators, but `or` is not an allowed function name in elixir.
   """
-   @spec or_(Locator.t(), Locator.t()) :: Locator.t()
+  @spec or_(Locator.t(), Locator.t()) :: Locator.t()
   def or_(%Locator{frame: frame} = locator, %Locator{frame: frame} = other) do
-   new(frame, locator.selector <> ">> internal:or=" <> Jason.encode!(other.selector))
+    new(frame, locator.selector <> ">> internal:or=" <> Jason.encode!(other.selector))
   end
+
   def or_(_, _) do
     raise ArgumentError, "Locators must belong to the same frame"
   end

@@ -590,7 +590,7 @@ defmodule Playwright.Page do
     |> List.first()
   end
 
-  @spec route(t(), binary(), function(), map()) :: :ok
+  @spec route(t(), binary() | Regex.t(), function(), map()) :: t() | {:error, Channel.Error.t()}
   def route(page, pattern, handler, options \\ %{})
 
   def route(%Page{session: session} = page, pattern, handler, _options) do

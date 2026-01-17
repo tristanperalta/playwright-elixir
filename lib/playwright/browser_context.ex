@@ -533,7 +533,7 @@ defmodule Playwright.BrowserContext do
     Channel.list(context.session, {:guid, context.guid}, "Page")
   end
 
-  @spec route(t(), binary(), function(), map()) :: :ok
+  @spec route(t(), binary() | Regex.t(), function(), map()) :: t() | {:error, Channel.Error.t()}
   def route(context, pattern, handler, options \\ %{})
 
   def route(%BrowserContext{session: session} = context, pattern, handler, _options) do
@@ -593,7 +593,7 @@ defmodule Playwright.BrowserContext do
 
   # ---
 
-  @spec unroute(t(), binary(), function() | nil) :: :ok
+  @spec unroute(t(), binary() | Regex.t(), function() | nil) :: t() | {:error, Channel.Error.t()}
   def unroute(%BrowserContext{session: session} = context, pattern, callback \\ nil) do
     with_latest(context, fn context ->
       remaining =
