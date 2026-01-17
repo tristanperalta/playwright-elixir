@@ -40,9 +40,8 @@ defmodule Playwright.Page do
   """
   use Playwright.SDK.ChannelOwner
 
-  alias Playwright.SDK.Channel
   alias Playwright.{BrowserContext, ElementHandle, Frame, Page, Response}
-  alias Playwright.SDK.{ChannelOwner, Helpers}
+  alias Playwright.SDK.{Channel, ChannelOwner, Helpers}
 
   @property :bindings
   @property :is_closed

@@ -46,14 +46,12 @@ defmodule Playwright.SDK.Helpers.RouteHandler do
   end
 
   defp regex_opts_to_flags(opts) do
-    opts
-    |> Enum.map(fn
+    Enum.map_join(opts, "", fn
       :caseless -> "i"
       :multiline -> "m"
       :dotall -> "s"
       :unicode -> "u"
       _ -> ""
     end)
-    |> Enum.join()
   end
 end

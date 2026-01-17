@@ -996,26 +996,16 @@ defmodule Playwright.Frame do
     select_option_values([values])
   end
 
+  defp select_option_values([]) do
+    %{}
+  end
+
+  defp select_option_values([%ElementHandle{} | _] = values) do
+    %{elements: Enum.map(values, &select_option_value/1)}
+  end
+
   defp select_option_values(values) when is_list(values) do
-    if Enum.empty?(values) do
-      %{}
-    else
-      if is_struct(List.first(values), ElementHandle) do
-        elements =
-          Enum.into(values, [], fn value ->
-            select_option_value(value)
-          end)
-
-        %{elements: elements}
-      else
-        options =
-          Enum.into(values, [], fn value ->
-            select_option_value(value)
-          end)
-
-        %{options: options}
-      end
-    end
+    %{options: Enum.map(values, &select_option_value/1)}
   end
 
   defp select_option_value(value) when is_binary(value) do

@@ -84,6 +84,7 @@ defmodule Playwright.MixProject do
         "man/guides/browsers.md": [filename: "guides-browsers"],
         "man/guides/chrome-extensions.md": [filename: "guides-chrome-extensions"],
         "man/guides/command-line-tools.md": [filename: "guides-command-line-tools"],
+        "man/guides/contributing.md": [filename: "guides-contributing"],
         "man/guides/dialogs.md": [filename: "guides-dialogs"],
         "man/guides/downloads.md": [filename: "guides-downloads"],
         "man/guides/emulation.md": [filename: "guides-emulation"],
