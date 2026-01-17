@@ -505,4 +505,28 @@ defmodule Playwright.PageTest do
       assert Page.text_content(page, "span.inner") == "target"
     end
   end
+
+  describe "Page.bring_to_front/1" do
+    test "brings the page to front", %{page: page} do
+      assert :ok = Page.bring_to_front(page)
+    end
+  end
+
+  describe "Page.viewport_size/1" do
+    test "returns the current viewport size", %{page: page} do
+      Page.set_viewport_size(page, %{width: 800, height: 600})
+      viewport = Page.viewport_size(page)
+
+      assert viewport.width == 800
+      assert viewport.height == 600
+    end
+
+    test "returns updated size after set_viewport_size", %{page: page} do
+      Page.set_viewport_size(page, %{width: 1024, height: 768})
+      viewport = Page.viewport_size(page)
+
+      assert viewport.width == 1024
+      assert viewport.height == 768
+    end
+  end
 end

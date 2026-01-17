@@ -48,6 +48,7 @@ defmodule Playwright.Page do
   @property :main_frame
   @property :owned_context
   @property :routes
+  @property :viewport_size
 
   @valid_events ~w(
     close console crash dialog domcontentloaded download
@@ -87,6 +88,10 @@ defmodule Playwright.Page do
     Channel.bind(session, {:guid, page.guid}, :route, fn %{target: target} = e ->
       on_route(target, e)
       # NOTE: will patch here
+    end)
+
+    Channel.bind(session, {:guid, page.guid}, :viewport_size_changed, fn %{params: params, target: target} ->
+      {:patch, %{target | viewport_size: params.viewport_size}}
     end)
 
     {:ok, %{page | bindings: %{}, routes: []}}
@@ -165,8 +170,18 @@ defmodule Playwright.Page do
   # @spec add_style_tag(Page.t(), options()) :: ElementHandle.t()
   # def add_style_tag(page, options \\ %{})
 
-  # @spec bring_to_front(t()) :: :ok
-  # def bring_to_front(page)
+  @doc """
+  Brings the page to front (activates the tab).
+
+  ## Returns
+
+    - `:ok`
+  """
+  @spec bring_to_front(t()) :: :ok
+  def bring_to_front(%Page{session: session} = page) do
+    Channel.post(session, {:guid, page.guid}, :bring_to_front, %{})
+    :ok
+  end
 
   # ---
 
@@ -872,6 +887,8 @@ defmodule Playwright.Page do
   @spec set_viewport_size(t(), dimensions()) :: :ok
   def set_viewport_size(%Page{session: session} = page, dimensions) do
     Channel.post(session, {:guid, page.guid}, :set_viewport_size, %{viewport_size: dimensions})
+    Channel.patch(session, {:guid, page.guid}, %{viewport_size: dimensions})
+    :ok
   end
 
   @spec text_content(t(), binary(), map()) :: binary() | nil
@@ -948,9 +965,6 @@ defmodule Playwright.Page do
 
   # @spec video(t()) :: Video.t() | nil
   # def video(page, handler \\ nil)
-
-  # @spec viewport_size(t()) :: dimensions() | nil
-  # def viewport_size(page)
 
   # @spec wait_for_event(t(), binary(), map()) :: map()
   # def wait_for_event(page, event, options \\ %{})

@@ -31,7 +31,7 @@ This document tracks the implementation status of Playwright features in playwri
 | `waitForRequest(urlOrPredicate, options)` | [ ] | |
 | `waitForResponse(urlOrPredicate, options)` | [ ] | |
 | `waitForEvent(event, options)` | [~] | As `expect_event` |
-| `bringToFront()` | [ ] | |
+| `bringToFront()` | [x] | |
 
 ### Content & State
 
@@ -39,10 +39,10 @@ This document tracks the implementation status of Playwright features in playwri
 |--------|--------|-------|
 | `url()` | [x] | |
 | `title()` | [x] | |
-| `content()` | [ ] | Get page HTML |
+| `content()` | [x] | Get page HTML |
 | `setContent(html, options)` | [x] | |
 | `setViewportSize(size)` | [x] | |
-| `viewportSize()` | [ ] | |
+| `viewportSize()` | [x] | |
 | `isClosed()` | [~] | Via `is_closed` field |
 | `close(options)` | [x] | |
 | `opener()` | [ ] | |
