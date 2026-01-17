@@ -513,12 +513,12 @@ These modules exist but have no implemented methods (all commented out):
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `accept(promptText)` | [ ] | !Priority |
-| `dismiss()` | [ ] | !Priority |
-| `message()` | [ ] | |
-| `defaultValue()` | [ ] | |
-| `type()` | [ ] | |
-| `page()` | [ ] | |
+| `accept(promptText)` | [x] | |
+| `dismiss()` | [x] | |
+| `message()` | [x] | |
+| `defaultValue()` | [x] | `default_value/1` |
+| `type()` | [x] | |
+| `page()` | [x] | |
 
 ### Download (`lib/playwright/page/download.ex`)
 
