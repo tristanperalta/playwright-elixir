@@ -194,7 +194,7 @@ defmodule Playwright.Locator do
 
   | key/name   | type   |            | description |
   | ---------- | ------ | ---------- | ----------- |
-  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2`. `(default: 30 seconds)` |
+  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec bounding_box(t(), options()) :: map() | nil
   def bounding_box(%Locator{} = locator, options \\ %{}) do
@@ -232,7 +232,7 @@ defmodule Playwright.Locator do
   | `:force`         | option | `boolean()`     | Whether to bypass the actionability checks. `(default: false)` |
   | `:no_wait_after` | option | `boolean()`     | Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. `(default: false)` |
   | `:position`      | option | `%{x: x, y: y}` | A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element. |
-  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2`. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   | `:trial`         | option | `boolean()`     | When set, this call only performs the actionability checks and skips the action. Useful to wait until the element is ready for the action without performing it. `(default: false)` |
   """
   @spec check(t(), options()) :: :ok
@@ -262,7 +262,7 @@ defmodule Playwright.Locator do
   If the element is detached from the DOM at any moment during the action, this method throws.
 
   When all steps combined have not finished during the specified timeout, this method throws a
-  `Playwright.SDK.Channel.Error.t()`. Passing `0` timeout disables this.
+  timeout error. Passing `0` timeout disables this.
 
   ## Returns
 
@@ -279,7 +279,7 @@ defmodule Playwright.Locator do
   | `:modifiers`     | option | `[:alt, :control, :meta, :shift]` | Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. |
   | `:no_wait_after` | option | `boolean()`                       | Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. `(default: false)` |
   | `:position`      | option | `%{x: x, y: y}`                   | A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element. |
-  | `:timeout`       | option | `number()`                        | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2`. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`                        | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   | `:trial`         | option | `boolean()`                       | When set, this call only performs the actionability checks and skips the action. Useful to wait until the element is ready for the action without performing it. `(default: false)` |
   """
   @spec click(t(), options_click()) :: :ok
@@ -342,7 +342,7 @@ defmodule Playwright.Locator do
   | `:modifiers`     | option | `[:alt, :control, :meta, :shift]` | Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. |
   | `:no_wait_after` | option | `boolean()`                       | Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. `(default: false)` |
   | `:position`      | option | `%{x: x, y: y}`                   | A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element. |
-  | `:timeout`       | option | `number()`                        | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`                        | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   | `:trial`         | option | `boolean()`                       | When set, this call only performs the actionability checks and skips the action. Useful to wait until the element is ready for the action without performing it. `(default: false)` |
   """
   @spec dblclick(t(), options()) :: :ok
@@ -395,7 +395,7 @@ defmodule Playwright.Locator do
   | ---------------- | ------ | ----------------------- | ----------- |
   | `type`           | param  | `atom()` or `binary()`  | DOM event type: `:click`, `:dragstart`, etc. |
   | `event_init`     | param  | `evaluation_argument()` | Optional event-specific initialization properties. |
-  | `:timeout`       | option | `number()`              | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`              | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec dispatch_event(t(), atom() | binary(), Frame.evaluation_argument(), options()) :: :ok
   def dispatch_event(%Locator{} = locator, type, event_init \\ nil, options \\ %{}) do
@@ -420,16 +420,16 @@ defmodule Playwright.Locator do
   ## Returns
 
   - `Playwright.ElementHandle.t()`
-  - `{:error, Playwright.SDK.Channel.Error.t()}`
+  - `{:error, error}`
 
   ## Arguments
 
   | key/name   | type   |            | description |
   | ---------- | ------ | ---------- | ----------- |
-  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @doc deprecated: "Discouraged: Prefer using Locators and web assertions over ElementHandles because latter are inherently racy."
-  @spec element_handle(t(), options()) :: ElementHandle.t() | {:error, Channel.Error.t()}
+  @spec element_handle(t(), options()) :: ElementHandle.t() | {:error, term()}
   def element_handle(%Locator{} = locator, options \\ %{}) do
     options = Map.merge(%{strict: true, state: "attached"}, options)
 
@@ -466,7 +466,7 @@ defmodule Playwright.Locator do
   | ------------ | ------ | ---------- | ----------- |
   | `expression` | param  | `binary()` | JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted as a function. Otherwise, evaluated as an expression. |
   | `arg`        | param  | `any()`    | Argument to pass to `expression` `(optional)` |
-  | `:timeout`   | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout`   | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec evaluate(t(), binary(), any(), options()) :: serializable()
   def evaluate(locator, expression, arg \\ nil, options \\ %{})
@@ -527,7 +527,7 @@ defmodule Playwright.Locator do
   ## Returns
 
     - `Playwright.ElementHandle.t()`
-    - `{:error, Playwright.SDK.Channel.Error.t()}`
+    - `{:error, error}`
 
   ## Arguments
 
@@ -535,9 +535,9 @@ defmodule Playwright.Locator do
   | ------------ | ------ | ---------- | ----------- |
   | `expression` | param  | `binary()` | JavaScript expression to be evaluated in the browser context. If it looks like a function declaration, it is interpreted as a function. Otherwise, evaluated as an expression. |
   | `arg`        | param  | `any()`    | Argument to pass to `expression` `(optional)` |
-  | `:timeout`   | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout`   | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
-  @spec evaluate_handle(t(), binary(), any(), options()) :: ElementHandle.t() | {:error, Channel.Error.t()}
+  @spec evaluate_handle(t(), binary(), any(), options()) :: ElementHandle.t() | {:error, term()}
   def evaluate_handle(locator, expression, arg \\ nil, options \\ %{})
 
   # NOTE: need to do all of the map-like things before a plain `map()`,
@@ -596,7 +596,7 @@ defmodule Playwright.Locator do
   | `value`          | param  | `binary()`  | Value to fill for the `<input>`, `<textarea>` or `[contenteditable]` element |
   | `:force`         | option | `boolean()` | Whether to bypass the actionability checks. `(default: false)` |
   | `:no_wait_after` | option | `boolean()` | Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. `(default: false)` |
-  | `:timeout`       | option | `number()`  | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`  | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec fill(t(), binary(), options()) :: :ok
   def fill(%Locator{} = locator, value, options \\ %{}) do
@@ -626,7 +626,7 @@ defmodule Playwright.Locator do
 
   | key/name   | type   |            | description |
   | ---------- | ------ | ---------- | ----------- |
-  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec focus(t(), options()) :: :ok
   def focus(%Locator{} = locator, options \\ %{}) do
@@ -649,7 +649,7 @@ defmodule Playwright.Locator do
   | key/name   | type   |            | description |
   | ---------- | ------ | ---------- | ----------- |
   | `name`     | param  | `binary()` | Name of the attribute to retrieve. |
-  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec get_attribute(t(), binary(), options()) :: binary() | nil
   def get_attribute(%Locator{} = locator, name, options \\ %{}) do
@@ -844,7 +844,7 @@ defmodule Playwright.Locator do
   | `:modifiers`     | option | `[:alt, :control, :meta, :shift]` | Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. |
   | `:no_wait_after` | option | `boolean()`                       | Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. `(default: false)` |
   | `:position`      | option | `%{x: x, y: y}`                   | A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element. |
-  | `:timeout`       | option | `number()`                        | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`                        | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   | `:trial`         | option | `boolean()`                       | When set, this call only performs the actionability checks and skips the action. Useful to wait until the element is ready for the action without performing it. `(default: false)` |
   """
   @spec hover(t(), options()) :: :ok
@@ -859,7 +859,7 @@ defmodule Playwright.Locator do
 
   | key/name   | type   |            | description |
   | ---------- | ------ | ---------- | ----------- |
-  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec inner_html(t(), options()) :: binary()
   def inner_html(%Locator{} = locator, options \\ %{}) do
@@ -873,7 +873,7 @@ defmodule Playwright.Locator do
 
   | key/name   | type   |            | description |
   | ---------- | ------ | ---------- | ----------- |
-  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec inner_text(t(), options()) :: binary()
   def inner_text(%Locator{} = locator, options \\ %{}) do
@@ -890,7 +890,7 @@ defmodule Playwright.Locator do
 
   | key/name   | type   |            | description |
   | ---------- | ------ | ---------- | ----------- |
-  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec input_value(t(), options()) :: binary()
   def input_value(%Locator{} = locator, options \\ %{}) do
@@ -906,7 +906,7 @@ defmodule Playwright.Locator do
 
   | key/name   | type   |            | description |
   | ---------- | ------ | ---------- | ----------- |
-  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec is_checked(t(), options()) :: boolean()
   def is_checked(%Locator{} = locator, options \\ %{}) do
@@ -920,7 +920,7 @@ defmodule Playwright.Locator do
 
   | key/name   | type   |            | description |
   | ---------- | ------ | ---------- | ----------- |
-  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec is_disabled(t(), options()) :: boolean()
   def is_disabled(%Locator{} = locator, options \\ %{}) do
@@ -934,7 +934,7 @@ defmodule Playwright.Locator do
 
   | key/name   | type   |            | description |
   | ---------- | ------ | ---------- | ----------- |
-  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec is_editable(t(), options()) :: boolean()
   def is_editable(%Locator{} = locator, options \\ %{}) do
@@ -948,7 +948,7 @@ defmodule Playwright.Locator do
 
   | key/name   | type   |            | description |
   | ---------- | ------ | ---------- | ----------- |
-  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec is_enabled(t(), options()) :: boolean()
   def is_enabled(%Locator{} = locator, options \\ %{}) do
@@ -962,7 +962,7 @@ defmodule Playwright.Locator do
 
   | key/name   | type   |            | description |
   | ---------- | ------ | ---------- | ----------- |
-  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec is_hidden(t(), options()) :: boolean()
   def is_hidden(%Locator{} = locator, options \\ %{}) do
@@ -976,7 +976,7 @@ defmodule Playwright.Locator do
 
   | key/name   | type   |            | description |
   | ---------- | ------ | ---------- | ----------- |
-  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec is_visible(t(), options()) :: boolean()
   def is_visible(%Locator{} = locator, options \\ %{}) do
@@ -1078,7 +1078,7 @@ defmodule Playwright.Locator do
   | `key`            | param  | `binary()`      | Name of the key to press or a character to generate, such as `ArrowLeft` or `a`. |
   | `:delay`         | option | `number()`      | Time to wait between `mousedown` and `mouseup` in milliseconds. `(default: 0)` |
   | `:no_wait_after` | option | `boolean()`     | Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. `(default: false)` |
-  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec press(t(), binary(), options_keyboard()) :: :ok
   def press(%Locator{} = locator, key, options \\ %{}) do
@@ -1102,7 +1102,7 @@ defmodule Playwright.Locator do
   | `:omit_background` | option | `boolean()`       | Hides default white background and allows capturing screenshots with transparency. Not applicable to jpeg images. `(default: false)` |
   | `:path`            | option | `binary()`        | The file path to which to save the image. The screenshot type will be inferred from file extension. If path is a relative path, then it is resolved relative to the current working directory. If no path is provided, the image won't be saved to the disk. |
   | `:quality`         | option | `number()`        | The quality of the image, between 0-100. Not applicable to `png` images. |
-  | `:timeout`         | option | `number()`        | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout`         | option | `number()`        | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   | `:type`            | option | `:png` or `:jpeg` | Specify screenshot type. `(default: :png)` |
   """
   @spec screenshot(t(), options()) :: binary()
@@ -1121,7 +1121,7 @@ defmodule Playwright.Locator do
 
   | key/name         | type   |                 | description |
   | ---------------- | ------ | --------------- | ----------- |
-  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec scroll_into_view(t(), options()) :: :ok
   def scroll_into_view(%Locator{} = locator, options \\ %{}) do
@@ -1174,7 +1174,7 @@ defmodule Playwright.Locator do
   | `values`         | param  | `any()`         | Options to select. |
   | `:force`         | option | `boolean()`     | Whether to bypass the actionability checks. `(default: false)` |
   | `:no_wait_after` | option | `boolean()`     | Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. `(default: false)` |
-  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
 
   ### On `values`
 
@@ -1205,7 +1205,7 @@ defmodule Playwright.Locator do
   | key/name         | type   |                 | description |
   | ---------------- | ------ | --------------- | ----------- |
   | `:force`         | option | `boolean()`     | Whether to bypass the actionability checks. `(default: false)` |
-  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec select_text(t(), options()) :: :ok
   def select_text(%Locator{} = locator, options \\ %{}) do
@@ -1243,7 +1243,7 @@ defmodule Playwright.Locator do
   | `:force`         | option | `boolean()`     | Whether to bypass the actionability checks. `(default: false)` |
   | `:no_wait_after` | option | `boolean()`     | Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. `(default: false)` |
   | `:position`      | option | `%{x: x, y: y}` | A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element. |
-  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2`. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   | `:trial`         | option | `boolean()`     | When set, this call only performs the actionability checks and skips the action. Useful to wait until the element is ready for the action without performing it. `(default: false)` |
   """
   @spec set_checked(t(), boolean(), options()) :: :ok
@@ -1273,7 +1273,7 @@ defmodule Playwright.Locator do
   | ---------------- | ------ | --------------- | ----------- |
   | `files`          | param  | `any()`         | ... |
   | `:no_wait_after` | option | `boolean()`     | Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. `(default: false)` |
-  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec set_input_files(t(), any(), options()) :: :ok
   def set_input_files(%Locator{} = locator, files, options \\ %{}) do
@@ -1321,7 +1321,7 @@ defmodule Playwright.Locator do
   | `:modifiers`     | option | `[:alt, :control, :meta, :shift]` | Modifier keys to press. Ensures that only these modifiers are pressed during the operation, and then restores current modifiers back. If not specified, currently pressed modifiers are used. |
   | `:no_wait_after` | option | `boolean()`                       | Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. `(default: false)` |
   | `:position`      | option | `%{x: x, y: y}`                   | A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element. |
-  | `:timeout`       | option | `number()`                        | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2`. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`                        | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   | `:trial`         | option | `boolean()`                       | When set, this call only performs the actionability checks and skips the action. Useful to wait until the element is ready for the action without performing it. `(default: false)` |
   """
   @spec tap(t(), options()) :: :ok
@@ -1337,7 +1337,7 @@ defmodule Playwright.Locator do
 
   | key/name   | type   |            | description |
   | ---------- | ------ | ---------- | ----------- |
-  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed by using the `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2` functions. `(default: 30 seconds)` |
+  | `:timeout` | option | `number()` | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec text_content(t(), options()) :: binary()
   def text_content(%Locator{} = locator, options \\ %{}) do
@@ -1358,7 +1358,7 @@ defmodule Playwright.Locator do
   | `text`           | param  | `binary()`  | Text to type into a focused element. |
   | `:delay`         | option | `number()`  | Time to wait between `mousedown` and `mouseup` in milliseconds. `(default: 0)` |
   | `:no_wait_after` | option | `boolean()` | Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. `(default: false)` |
-  | `:timeout`       | option | `number()`  | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2`. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`  | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
   @spec type(t(), binary(), options_keyboard()) :: :ok
   def type(%Locator{} = locator, text, options \\ %{}) do
@@ -1395,7 +1395,7 @@ defmodule Playwright.Locator do
   | `:force`         | option | `boolean()`     | Whether to bypass the actionability checks. `(default: false)` |
   | `:no_wait_after` | option | `boolean()`     | Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. `(default: false)` |
   | `:position`      | option | `%{x: x, y: y}` | A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element. |
-  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via `Playwright.BrowserContext.set_default_timeout/2` or `Playwright.Page.set_default_timeout/2`. `(default: 30 seconds)` |
+  | `:timeout`       | option | `number()`      | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   | `:trial`         | option | `boolean()`     | When set, this call only performs the actionability checks and skips the action. Useful to wait until the element is ready for the action without performing it. `(default: false)` |
   """
   @spec uncheck(t(), options()) :: :ok
@@ -1438,7 +1438,7 @@ defmodule Playwright.Locator do
   # const orderSent = page.locator('#order-sent');
   # await orderSent.waitFor();
 
-  @spec wait_for(t(), options()) :: t() | {:error, Channel.Error.t()}
+  @spec wait_for(t(), options()) :: t() | {:error, term()}
   def wait_for(%Locator{} = locator, options \\ %{}) do
     case Frame.wait_for_selector(locator.frame, locator.selector, options) do
       {:error, _} = error ->
