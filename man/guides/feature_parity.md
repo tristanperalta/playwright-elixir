@@ -54,7 +54,7 @@ This document tracks the implementation status of Playwright features in playwri
 | `mainFrame()` | [~] | Via `main_frame` field |
 | `frames()` | [x] | |
 | `frame(selector)` | [ ] | Get frame by name/url |
-| `frameLocator(selector)` | [ ] | !Priority |
+| `frameLocator(selector)` | [x] | |
 
 ### Locators (getBy* methods)
 
@@ -424,7 +424,7 @@ This document tracks the implementation status of Playwright features in playwri
 | `childFrames()` | [ ] | |
 | `isDetached()` | [ ] | |
 | `frameElement()` | [ ] | |
-| `frameLocator(selector)` | [ ] | |
+| `frameLocator(selector)` | [x] | |
 
 ### Locators
 
@@ -555,19 +555,19 @@ These modules exist but have no implemented methods (all commented out):
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `first()` | [ ] | |
-| `last()` | [ ] | |
-| `nth(index)` | [ ] | |
-| `frameLocator(selector)` | [ ] | |
-| `locator(selector)` | [ ] | |
-| `getByText(text, options)` | [ ] | |
-| `getByRole(role, options)` | [ ] | |
-| `getByTestId(testId)` | [ ] | |
-| `getByLabel(text, options)` | [ ] | |
-| `getByPlaceholder(text, options)` | [ ] | |
-| `getByAltText(text, options)` | [ ] | |
-| `getByTitle(text, options)` | [ ] | |
-| `owner()` | [ ] | |
+| `first()` | [x] | |
+| `last()` | [x] | |
+| `nth(index)` | [x] | |
+| `frameLocator(selector)` | [x] | |
+| `locator(selector)` | [x] | |
+| `getByText(text, options)` | [x] | |
+| `getByRole(role, options)` | [x] | |
+| `getByTestId(testId)` | [x] | |
+| `getByLabel(text, options)` | [x] | |
+| `getByPlaceholder(text, options)` | [x] | |
+| `getByAltText(text, options)` | [x] | |
+| `getByTitle(text, options)` | [x] | |
+| `owner()` | [x] | |
 
 ---
 
@@ -625,7 +625,7 @@ These modules exist but have no implemented methods (all commented out):
 
 ### Phase 4: Advanced Features
 1. ~~`Mouse` module~~ DONE
-2. `FrameLocator` module
+2. ~~`FrameLocator` module~~ DONE
 3. `Page.pdf()`
 4. `Tracing` module
 

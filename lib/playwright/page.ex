@@ -561,6 +561,24 @@ defmodule Playwright.Page do
     Playwright.Locator.new(page, selector)
   end
 
+  @doc """
+  Returns a FrameLocator for a frame on the page.
+
+  When working with iframes, you can create a frame locator that will enter the iframe
+  and allow locating elements in that iframe.
+
+  ## Example
+
+      page
+      |> Page.frame_locator("#my-frame")
+      |> FrameLocator.get_by_role("button", name: "Submit")
+      |> Locator.click()
+  """
+  @spec frame_locator(t(), selector()) :: Playwright.Page.FrameLocator.t()
+  def frame_locator(%Page{} = page, selector) do
+    Playwright.Page.FrameLocator.new(main_frame(page), selector)
+  end
+
   # @spec main_frame(t()) :: Frame.t()
   # def main_frame(page)
 
