@@ -65,9 +65,9 @@ This document tracks the implementation status of Playwright features in playwri
 | `getByRole(role, options)` | [x] | |
 | `getByTestId(testId)` | [x] | |
 | `getByLabel(text, options)` | [x] | |
-| `getByPlaceholder(text, options)` | [ ] | |
-| `getByAltText(text, options)` | [ ] | |
-| `getByTitle(text, options)` | [ ] | |
+| `getByPlaceholder(text, options)` | [x] | |
+| `getByAltText(text, options)` | [x] | |
+| `getByTitle(text, options)` | [x] | |
 
 ### Actions (selector-based)
 
@@ -193,9 +193,9 @@ This document tracks the implementation status of Playwright features in playwri
 | `getByRole(role, options)` | [x] | |
 | `getByTestId(testId)` | [x] | |
 | `getByLabel(text, options)` | [x] | |
-| `getByPlaceholder(text, options)` | [ ] | |
-| `getByAltText(text, options)` | [ ] | |
-| `getByTitle(text, options)` | [ ] | |
+| `getByPlaceholder(text, options)` | [x] | |
+| `getByAltText(text, options)` | [x] | |
+| `getByTitle(text, options)` | [x] | |
 | `frameLocator(selector)` | [ ] | |
 | `contentFrame()` | [ ] | |
 | `owner()` | [ ] | |
@@ -435,9 +435,9 @@ This document tracks the implementation status of Playwright features in playwri
 | `getByRole(role, options)` | [x] | |
 | `getByTestId(testId)` | [x] | |
 | `getByLabel(text, options)` | [x] | |
-| `getByPlaceholder(text, options)` | [ ] | |
-| `getByAltText(text, options)` | [ ] | |
-| `getByTitle(text, options)` | [ ] | |
+| `getByPlaceholder(text, options)` | [x] | |
+| `getByAltText(text, options)` | [x] | |
+| `getByTitle(text, options)` | [x] | |
 
 ### Actions
 

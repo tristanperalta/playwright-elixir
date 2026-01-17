@@ -158,4 +158,148 @@ defmodule Playwright.GetByTest do
       assert Locator.count(locator) == 1
     end
   end
+
+  describe "get_by_placeholder/3" do
+    test "locates input by placeholder text", %{page: page} do
+      Page.set_content(page, ~s|<input placeholder="Enter your email" />|)
+      locator = Page.get_by_placeholder(page, "Enter your email")
+      assert Locator.count(locator) == 1
+    end
+
+    test "locates input with partial placeholder match", %{page: page} do
+      Page.set_content(page, ~s|<input placeholder="Enter your email address" />|)
+      locator = Page.get_by_placeholder(page, "email")
+      assert Locator.count(locator) == 1
+    end
+
+    test "with exact option matches only exact text", %{page: page} do
+      Page.set_content(
+        page,
+        ~s|<input id="full" placeholder="Enter email" /><input id="short" placeholder="email" />|
+      )
+
+      locator = Page.get_by_placeholder(page, "email", %{exact: true})
+      assert Locator.count(locator) == 1
+      assert Locator.get_attribute(locator, "id") == "short"
+    end
+
+    test "works on Frame", %{page: page} do
+      Page.set_content(page, ~s|<input placeholder="Search..." />|)
+      frame = Page.main_frame(page)
+      locator = Playwright.Frame.get_by_placeholder(frame, "Search")
+      assert Locator.count(locator) == 1
+    end
+
+    test "works on Locator", %{page: page} do
+      Page.set_content(page, ~s|
+        <form data-testid="login">
+          <input placeholder="Username" />
+          <input placeholder="Password" type="password" />
+        </form>
+      |)
+
+      locator =
+        page
+        |> Page.get_by_test_id("login")
+        |> Locator.get_by_placeholder("Password")
+
+      assert Locator.count(locator) == 1
+    end
+  end
+
+  describe "get_by_alt_text/3" do
+    test "locates image by alt text", %{page: page} do
+      Page.set_content(page, ~s|<img src="logo.png" alt="Company Logo" />|)
+      locator = Page.get_by_alt_text(page, "Company Logo")
+      assert Locator.count(locator) == 1
+    end
+
+    test "locates image with partial alt text match", %{page: page} do
+      Page.set_content(page, ~s|<img src="logo.png" alt="Acme Corporation Logo" />|)
+      locator = Page.get_by_alt_text(page, "Acme")
+      assert Locator.count(locator) == 1
+    end
+
+    test "with exact option matches only exact text", %{page: page} do
+      Page.set_content(
+        page,
+        ~s|<img id="full" alt="Logo Image" /><img id="short" alt="Logo" />|
+      )
+
+      locator = Page.get_by_alt_text(page, "Logo", %{exact: true})
+      assert Locator.count(locator) == 1
+      assert Locator.get_attribute(locator, "id") == "short"
+    end
+
+    test "works on Frame", %{page: page} do
+      Page.set_content(page, ~s|<img alt="Profile Picture" />|)
+      frame = Page.main_frame(page)
+      locator = Playwright.Frame.get_by_alt_text(frame, "Profile")
+      assert Locator.count(locator) == 1
+    end
+
+    test "works on Locator", %{page: page} do
+      Page.set_content(page, ~s|
+        <div data-testid="gallery">
+          <img alt="Photo 1" />
+          <img alt="Photo 2" />
+        </div>
+      |)
+
+      locator =
+        page
+        |> Page.get_by_test_id("gallery")
+        |> Locator.get_by_alt_text("Photo 1")
+
+      assert Locator.count(locator) == 1
+    end
+  end
+
+  describe "get_by_title/3" do
+    test "locates element by title attribute", %{page: page} do
+      Page.set_content(page, ~s|<button title="Submit form">Submit</button>|)
+      locator = Page.get_by_title(page, "Submit form")
+      assert Locator.text_content(locator) == "Submit"
+    end
+
+    test "locates element with partial title match", %{page: page} do
+      Page.set_content(page, ~s|<span title="Click here to learn more">Info</span>|)
+      locator = Page.get_by_title(page, "learn more")
+      assert Locator.count(locator) == 1
+    end
+
+    test "with exact option matches only exact text", %{page: page} do
+      Page.set_content(
+        page,
+        ~s|<span id="full" title="Help text here">A</span><span id="short" title="Help">B</span>|
+      )
+
+      locator = Page.get_by_title(page, "Help", %{exact: true})
+      assert Locator.count(locator) == 1
+      assert Locator.get_attribute(locator, "id") == "short"
+    end
+
+    test "works on Frame", %{page: page} do
+      Page.set_content(page, ~s|<abbr title="HyperText Markup Language">HTML</abbr>|)
+      frame = Page.main_frame(page)
+      locator = Playwright.Frame.get_by_title(frame, "HyperText")
+      assert Locator.count(locator) == 1
+    end
+
+    test "works on Locator", %{page: page} do
+      Page.set_content(page, ~s|
+        <div data-testid="toolbar">
+          <button title="Bold">B</button>
+          <button title="Italic">I</button>
+        </div>
+      |)
+
+      locator =
+        page
+        |> Page.get_by_test_id("toolbar")
+        |> Locator.get_by_title("Bold")
+
+      assert Locator.text_content(locator) == "B"
+    end
+  end
 end

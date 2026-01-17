@@ -411,8 +411,20 @@ defmodule Playwright.Page do
 
   # ---
 
-  # @spec get_by_alt_text(Page.t(), binary(), options()) :: Playwright.Locator.t() | nil
-  # def get_by_alt_text(page, text, options \\ %{})
+  @doc """
+  Allows locating elements by their alt text.
+
+  ## Arguments
+
+  | key/name   | type   |            | description |
+  | ---------- | ------ | ---------- | ----------- |
+  | `text`     | param  | `binary()` | Alt text to locate. |
+  | `:exact`   | option | `boolean()`| Whether to find an exact match. Default to false. |
+  """
+  @spec get_by_alt_text(t(), binary(), %{optional(:exact) => boolean()}) :: Playwright.Locator.t()
+  def get_by_alt_text(page, text, options \\ %{}) when is_binary(text) do
+    main_frame(page) |> Frame.get_by_alt_text(text, options)
+  end
 
   @doc """
   Allows locating elements by their associated label text.
@@ -429,8 +441,20 @@ defmodule Playwright.Page do
     main_frame(page) |> Frame.get_by_label(text, options)
   end
 
-  # @spec get_by_placeholder(Page.t(), binary(), options()) :: Playwright.Locator.t() | nil
-  # def get_by_placeholder(page, text, options \\ %{})
+  @doc """
+  Allows locating input elements by their placeholder text.
+
+  ## Arguments
+
+  | key/name   | type   |            | description |
+  | ---------- | ------ | ---------- | ----------- |
+  | `text`     | param  | `binary()` | Placeholder text to locate. |
+  | `:exact`   | option | `boolean()`| Whether to find an exact match. Default to false. |
+  """
+  @spec get_by_placeholder(t(), binary(), %{optional(:exact) => boolean()}) :: Playwright.Locator.t()
+  def get_by_placeholder(page, text, options \\ %{}) when is_binary(text) do
+    main_frame(page) |> Frame.get_by_placeholder(text, options)
+  end
 
   @doc """
   Allows locating elements by ARIA role.
@@ -484,8 +508,20 @@ defmodule Playwright.Page do
     main_frame(page) |> Frame.get_by_text(text, options)
   end
 
-  # @spec get_by_title(Page.t(), binary(), options()) :: Playwright.Locator.t() | nil
-  # def get_by_title(page, text, options \\ %{})
+  @doc """
+  Allows locating elements by their title attribute.
+
+  ## Arguments
+
+  | key/name   | type   |            | description |
+  | ---------- | ------ | ---------- | ----------- |
+  | `text`     | param  | `binary()` | Title text to locate. |
+  | `:exact`   | option | `boolean()`| Whether to find an exact match. Default to false. |
+  """
+  @spec get_by_title(t(), binary(), %{optional(:exact) => boolean()}) :: Playwright.Locator.t()
+  def get_by_title(page, text, options \\ %{}) when is_binary(text) do
+    main_frame(page) |> Frame.get_by_title(text, options)
+  end
 
   @doc """
   Navigate to the previous page in history.

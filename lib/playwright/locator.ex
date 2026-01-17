@@ -712,8 +712,20 @@ defmodule Playwright.Locator do
     Frame.get_attribute(locator.frame, locator.selector, name, options)
   end
 
-  # @spec get_by_alt_text(Locator.t(), binary(), options()) :: Locator.t()
-  # def get_by_alt_text(locator, text, options \\ %{})
+  @doc """
+  Allows locating elements by their alt text.
+
+  ## Arguments
+
+  | key/name   | type   |            | description |
+  | ---------- | ------ | ---------- | ----------- |
+  | `text`     | param  | `binary()` | Alt text to locate. |
+  | `:exact`   | option | `boolean()`| Whether to find an exact match: case-sensitive and whole-string. Default to false. |
+  """
+  @spec get_by_alt_text(t(), binary(), %{optional(:exact) => boolean()}) :: t()
+  def get_by_alt_text(locator, text, options \\ %{}) when is_binary(text) do
+    locator |> Locator.locator(get_by_alt_text_selector(text, options))
+  end
 
   @doc """
   Allows locating elements by their associated label text.
@@ -730,8 +742,20 @@ defmodule Playwright.Locator do
     locator |> Locator.locator(get_by_label_selector(text, options))
   end
 
-  # @spec get_by_placeholder(Locator.t(), binary(), options()) :: Locator.t()
-  # def get_by_placeholder(locator, text, options \\ %{})
+  @doc """
+  Allows locating input elements by their placeholder text.
+
+  ## Arguments
+
+  | key/name   | type   |            | description |
+  | ---------- | ------ | ---------- | ----------- |
+  | `text`     | param  | `binary()` | Placeholder text to locate. |
+  | `:exact`   | option | `boolean()`| Whether to find an exact match: case-sensitive and whole-string. Default to false. |
+  """
+  @spec get_by_placeholder(t(), binary(), %{optional(:exact) => boolean()}) :: t()
+  def get_by_placeholder(locator, text, options \\ %{}) when is_binary(text) do
+    locator |> Locator.locator(get_by_placeholder_selector(text, options))
+  end
 
   @doc """
   Allows locating elements by ARIA role.
@@ -852,6 +876,27 @@ defmodule Playwright.Locator do
     end
   end
 
+  @doc false
+  def get_by_placeholder_selector(text, options \\ %{}) do
+    get_by_attr_selector("placeholder", text, options)
+  end
+
+  @doc false
+  def get_by_alt_text_selector(text, options \\ %{}) do
+    get_by_attr_selector("alt", text, options)
+  end
+
+  @doc false
+  def get_by_title_selector(text, options \\ %{}) do
+    get_by_attr_selector("title", text, options)
+  end
+
+  defp get_by_attr_selector(attr_name, text, options) do
+    exact = Map.get(options, :exact, false)
+    escaped = escape_for_attribute_selector(text, exact)
+    "internal:attr=[#{attr_name}=#{escaped}]"
+  end
+
   defp escape_for_text_selector(text, exact) do
     suffix = if exact, do: "s", else: "i"
     "\"#{text}\"#{suffix}"
@@ -880,8 +925,20 @@ defmodule Playwright.Locator do
     flags <> if :dotall in opts, do: "s", else: ""
   end
 
-  # @spec get_by_title(Locator.t(), binary(), options()) :: Locator.t()
-  # def get_by_title(locator, text, options \\ %{})
+  @doc """
+  Allows locating elements by their title attribute.
+
+  ## Arguments
+
+  | key/name   | type   |            | description |
+  | ---------- | ------ | ---------- | ----------- |
+  | `text`     | param  | `binary()` | Title text to locate. |
+  | `:exact`   | option | `boolean()`| Whether to find an exact match: case-sensitive and whole-string. Default to false. |
+  """
+  @spec get_by_title(t(), binary(), %{optional(:exact) => boolean()}) :: t()
+  def get_by_title(locator, text, options \\ %{}) when is_binary(text) do
+    locator |> Locator.locator(get_by_title_selector(text, options))
+  end
 
   # @spec highlight(Locator.t()) :: :ok
   # def highlight(locator)
