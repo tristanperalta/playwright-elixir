@@ -533,6 +533,15 @@ These modules exist but have no implemented methods (all commented out):
 | `suggestedFilename()` | [x] | |
 | `url()` | [x] | |
 
+### FileChooser (`lib/playwright/page/file_chooser.ex`)
+
+| Method | Status | Notes |
+|--------|--------|-------|
+| `element()` | [x] | |
+| `isMultiple()` | [x] | `is_multiple/1` |
+| `page()` | [x] | |
+| `setFiles(files, options)` | [x] | `set_files/3` via `from_event/1` |
+
 ### Coverage (`lib/playwright/page/coverage.ex`)
 
 | Method | Status | Notes |
@@ -574,15 +583,6 @@ These modules exist but have no implemented methods (all commented out):
 ---
 
 ## Missing Modules (Not Yet Created)
-
-### FileChooser
-
-| Method | Status | Notes |
-|--------|--------|-------|
-| `element()` | [ ] | |
-| `isMultiple()` | [ ] | |
-| `page()` | [ ] | |
-| `setFiles(files, options)` | [ ] | !Priority |
 
 ### Clock
 
@@ -633,7 +633,7 @@ These modules exist but have no implemented methods (all commented out):
 
 ### Phase 5: Completeness
 1. ~~Remaining Page query methods~~ DONE
-2. `FileChooser` module
+2. ~~`FileChooser` module~~ DONE
 3. `Clock` module
 4. `Video` module
 

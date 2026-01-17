@@ -669,19 +669,23 @@ defmodule Playwright.Page do
     end
   end
 
-  # NOTE: These events will be recv'd from Playwright server with the parent
-  # BrowserContext as the context/bound :guid. So, we need to add our handlers
-  # there, on that (BrowserContext) parent.
+  # NOTE: These events are recv'd from Playwright server via the parent
+  # BrowserContext channel. So, we need to add our handlers there.
   #
   # For :update_subscription, :event is one of:
-  # (console|dialog|fileChooser|request|response|requestFinished|requestFailed)
+  # (console|dialog|request|response|requestFinished|requestFailed)
   def on(%Page{session: session} = page, event, callback)
-      when event in [:console, :dialog, :file_chooser, :request, :response, :request_finished, :request_failed] do
-    # HACK!
+      when event in [:console, :dialog, :request, :response, :request_finished, :request_failed] do
     e = Atom.to_string(event) |> Recase.to_camel()
 
     Channel.post(session, {:guid, page.guid}, :update_subscription, %{event: e, enabled: true})
     Channel.bind(session, {:guid, context(page).guid}, event, callback)
+  end
+
+  # NOTE: FileChooser events are recv'd directly on the Page channel.
+  def on(%Page{session: session} = page, :file_chooser, callback) do
+    Channel.post(session, {:guid, page.guid}, :update_subscription, %{event: "fileChooser", enabled: true})
+    Channel.bind(session, {:guid, page.guid}, :file_chooser, callback)
   end
 
   def on(%Page{session: session} = page, event, callback) when is_atom(event) do
