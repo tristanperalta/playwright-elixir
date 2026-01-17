@@ -604,8 +604,63 @@ defmodule Playwright.Locator do
     Frame.fill(locator.frame, locator.selector, value, options)
   end
 
-  # @spec filter(Locator.t(), options()) :: Locator.t()
-  # def filter(locator, options \\ %{})
+  @doc """
+  Filters this locator to match only elements that satisfy additional conditions.
+
+  ## Options
+
+  - `:has_text` - Filter elements containing specified text (string or regex)
+  - `:has_not_text` - Filter elements NOT containing specified text
+  - `:has` - Filter elements containing a descendant matching the given locator
+  - `:has_not` - Filter elements NOT containing a descendant matching the given locator
+  - `:visible` - Filter elements by visibility (boolean)
+
+  ## Examples
+
+      # Filter by text content
+      Locator.filter(locator, has_text: "Submit")
+
+      # Filter by nested locator
+      button = Page.locator(page, "button")
+      Locator.filter(locator, has: button)
+
+      # Combine multiple filters
+      Locator.filter(locator, has_text: "Item", visible: true)
+  """
+  @spec filter(t(), keyword()) :: t()
+  def filter(%Locator{frame: frame, selector: selector}, options) when is_list(options) do
+    filtered_selector =
+      Enum.reduce(options, selector, fn
+        {:has_text, text}, acc ->
+          acc <> " >> internal:has-text=" <> escape_text_selector(text)
+
+        {:has_not_text, text}, acc ->
+          acc <> " >> internal:has-not-text=" <> escape_text_selector(text)
+
+        {:has, %Locator{frame: ^frame, selector: inner_selector}}, acc ->
+          acc <> " >> internal:has=" <> Jason.encode!(inner_selector)
+
+        {:has, %Locator{}}, _acc ->
+          raise ArgumentError, "Inner \"has\" locator must belong to the same frame."
+
+        {:has_not, %Locator{frame: ^frame, selector: inner_selector}}, acc ->
+          acc <> " >> internal:has-not=" <> Jason.encode!(inner_selector)
+
+        {:has_not, %Locator{}}, _acc ->
+          raise ArgumentError, "Inner \"has_not\" locator must belong to the same frame."
+
+        {:visible, true}, acc ->
+          acc <> " >> visible=true"
+
+        {:visible, false}, acc ->
+          acc <> " >> visible=false"
+
+        {key, _value}, _acc ->
+          raise ArgumentError, "Unknown filter option: #{inspect(key)}"
+      end)
+
+    new(frame, filtered_selector)
+  end
 
   @doc """
   Returns a new `Playwright.Locator` scoped to the first matching element.
@@ -806,6 +861,23 @@ defmodule Playwright.Locator do
     escaped = value |> String.replace("\\", "\\\\") |> String.replace("\"", "\\\"")
     suffix = if exact, do: "s", else: "i"
     "\"#{escaped}\"#{suffix}"
+  end
+
+  defp escape_text_selector(text) when is_binary(text) do
+    # Case-insensitive text match
+    escaped = text |> String.replace("\\", "\\\\") |> String.replace("\"", "\\\"")
+    "\"#{escaped}\"i"
+  end
+
+  defp escape_text_selector(%Regex{} = regex) do
+    # Regex pattern
+    "/" <> Regex.source(regex) <> "/" <> regex_flags(regex)
+  end
+
+  defp regex_flags(%Regex{} = regex) do
+    opts = Regex.opts(regex)
+    flags = if :caseless in opts, do: "i", else: ""
+    flags <> if :dotall in opts, do: "s", else: ""
   end
 
   # @spec get_by_title(Locator.t(), binary(), options()) :: Locator.t()

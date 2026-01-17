@@ -186,7 +186,7 @@ This document tracks the implementation status of Playwright features in playwri
 | `first()` | [x] | |
 | `last()` | [x] | |
 | `nth(index)` | [x] | |
-| `filter(options)` | [ ] | !Priority - filter by text/hasText |
+| `filter(options)` | [x] | has_text, has_not_text, has, has_not, visible |
 | `and(locator)` | [ ] | Combine locators |
 | `or(locator)` | [x] | As `or_` |
 | `getByText(text, options)` | [x] | |
@@ -616,7 +616,7 @@ These modules exist but have no implemented methods (all commented out):
 1. ~~`*.getByRole()`~~ DONE
 2. ~~`*.getByTestId()`~~ DONE
 3. ~~`*.getByLabel()`~~ DONE
-4. `Locator.filter()`
+4. ~~`Locator.filter()`~~ DONE
 
 ### Phase 3: Session & State (Testing Infrastructure)
 1. `BrowserContext.storageState()`
