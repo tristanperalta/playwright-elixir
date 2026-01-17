@@ -47,15 +47,15 @@ defmodule Playwright.MixProject do
   defp deps do
     [
       {:cowlib, "~> 2.7.0"},
-      {:credo, "~> 1.6", only: [:dev, :test], runtime: false},
-      {:dialyxir, "~> 1.1", only: [:dev, :test], runtime: false},
-      {:esbuild, "~> 0.8.1", runtime: Mix.env() == :dev},
-      {:ex_doc, "~> 0.34", only: :dev, runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false},
+      {:esbuild, "~> 0.10", runtime: Mix.env() == :dev},
+      {:ex_doc, "~> 0.39", only: :dev, runtime: false},
       {:gun, "~> 1.3.3"},
       {:jason, "~> 1.4"},
-      {:mix_audit, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:mix_audit, "~> 2.1", only: [:dev, :test], runtime: false},
       {:playwright_assets, "1.49.1", only: [:test]},
-      {:recase, "~> 0.7"},
+      {:recase, "~> 0.9"},
       {:elixir_uuid, "~> 1.2"}
     ]
   end
