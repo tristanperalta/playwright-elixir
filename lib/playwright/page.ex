@@ -444,11 +444,53 @@ defmodule Playwright.Page do
   # @spec get_by_title(Page.t(), binary(), options()) :: Playwright.Locator.t() | nil
   # def get_by_title(page, text, options \\ %{})
 
-  # @spec go_back(t(), options()) :: Response.t() | nil
-  # def go_back(page, options \\ %{})
+  @doc """
+  Navigate to the previous page in history.
 
-  # @spec go_forward(t(), options()) :: Response.t() | nil
-  # def go_forward(page, options \\ %{})
+  ## Options
+
+  - `:timeout` - Maximum time in milliseconds. Defaults to 30000 (30 seconds).
+  - `:wait_until` - When to consider navigation succeeded. Defaults to `"load"`.
+    - `"load"` - wait for the load event
+    - `"domcontentloaded"` - wait for DOMContentLoaded event
+    - `"networkidle"` - wait until no network connections for 500ms
+    - `"commit"` - wait for network response and document started loading
+
+  ## Returns
+
+  - `Playwright.Response.t()` - Response of the main resource
+  - `nil` - if navigation did not happen (e.g., no previous page)
+  """
+  @spec go_back(t(), options()) :: Response.t() | nil
+  def go_back(%Page{session: session} = page, options \\ %{}) do
+    case Channel.post(session, {:guid, page.guid}, :goBack, options) do
+      %{response: nil} -> nil
+      %{response: %{guid: _} = response} -> Channel.find(session, {:guid, response.guid})
+      other -> other
+    end
+  end
+
+  @doc """
+  Navigate to the next page in history.
+
+  ## Options
+
+  - `:timeout` - Maximum time in milliseconds. Defaults to 30000 (30 seconds).
+  - `:wait_until` - When to consider navigation succeeded. Defaults to `"load"`.
+
+  ## Returns
+
+  - `Playwright.Response.t()` - Response of the main resource
+  - `nil` - if navigation did not happen (e.g., no next page)
+  """
+  @spec go_forward(t(), options()) :: Response.t() | nil
+  def go_forward(%Page{session: session} = page, options \\ %{}) do
+    case Channel.post(session, {:guid, page.guid}, :goForward, options) do
+      %{response: nil} -> nil
+      %{response: %{guid: _} = response} -> Channel.find(session, {:guid, response.guid})
+      other -> other
+    end
+  end
 
   # ---
 
@@ -749,8 +791,37 @@ defmodule Playwright.Page do
 
   # ---
 
-  # @spec wait_for_url(Page.t(), binary(), options()) :: :ok
-  # def wait_for_url(page, url, options \\ %{})
+  @doc """
+  Wait until the page URL matches the given pattern.
+
+  The pattern can be:
+  - A string with glob patterns (e.g., `"**/login"`)
+  - A regex (e.g., `~r/\\/login$/`)
+  - A function that receives URL and returns boolean
+
+  ## Options
+
+  - `:timeout` - Maximum time in milliseconds. Defaults to 30000 (30 seconds).
+  - `:wait_until` - When to consider navigation succeeded. Defaults to `"load"`.
+
+  ## Examples
+
+      Page.wait_for_url(page, "**/login")
+      Page.wait_for_url(page, ~r/\\/dashboard$/)
+      Page.wait_for_url(page, fn url -> String.contains?(url, "success") end)
+
+  ## Returns
+
+  - `Page.t()` - The page after URL matches
+  - `{:error, term()}` - If timeout occurs
+  """
+  @spec wait_for_url(t(), binary() | Regex.t() | function(), options()) :: t() | {:error, term()}
+  def wait_for_url(%Page{} = page, url_pattern, options \\ %{}) do
+    case main_frame(page) |> Frame.wait_for_url(url_pattern, options) do
+      {:error, _} = error -> error
+      _frame -> page
+    end
+  end
 
   # @spec workers(t()) :: [Worker.t()]
   # def workers(page)

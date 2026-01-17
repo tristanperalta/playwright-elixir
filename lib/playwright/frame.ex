@@ -943,8 +943,73 @@ defmodule Playwright.Frame do
   # @spec wait_for_timeout(Frame.t(), number()) :: :ok
   # def wait_for_timeout(frame, timeout)
 
-  # @spec wait_for_url(Frame.t(), binary(), options()) :: :ok
-  # def wait_for_url(frame, url, options \\ %{})
+  @doc """
+  Wait until the frame URL matches the given pattern.
+
+  The pattern can be:
+  - A string with glob patterns (e.g., `"**/login"`)
+  - A regex (e.g., `~r/\\/login$/`)
+  - A function that receives URL and returns boolean
+
+  ## Options
+
+  - `:timeout` - Maximum time in milliseconds. Defaults to 30000 (30 seconds).
+  - `:wait_until` - When to consider navigation succeeded. Defaults to `"load"`.
+
+  ## Examples
+
+      Frame.wait_for_url(frame, "**/login")
+      Frame.wait_for_url(frame, ~r/\\/dashboard$/)
+      Frame.wait_for_url(frame, fn url -> String.contains?(url, "success") end)
+
+  ## Returns
+
+  - `Frame.t()` - The frame after URL matches
+  - `{:error, term()}` - If timeout occurs
+  """
+  @spec wait_for_url(t(), binary() | Regex.t() | function(), options()) :: t() | {:error, term()}
+  def wait_for_url(%Frame{} = frame, url_pattern, options \\ %{}) do
+    alias Playwright.SDK.Helpers.URLMatcher
+
+    matcher = URLMatcher.new(url_pattern)
+    current_url = url(frame)
+
+    if URLMatcher.matches(matcher, current_url) do
+      # URL already matches, just wait for load state
+      wait_until = Map.get(options, :wait_until, "load")
+      wait_for_load_state(frame, wait_until, options)
+    else
+      # Poll for URL change
+      timeout = Map.get(options, :timeout, 30_000)
+      poll_interval = 100
+      deadline = System.monotonic_time(:millisecond) + timeout
+
+      wait_for_url_loop(frame, matcher, deadline, poll_interval, options)
+    end
+  end
+
+  defp wait_for_url_loop(frame, matcher, deadline, poll_interval, options) do
+    alias Playwright.SDK.Channel
+    alias Playwright.SDK.Helpers.URLMatcher
+
+    # Get fresh frame state
+    fresh_frame = Channel.find(frame.session, {:guid, frame.guid})
+    current_url = url(fresh_frame)
+
+    cond do
+      URLMatcher.matches(matcher, current_url) ->
+        # URL matches, wait for load state and return
+        wait_until = Map.get(options, :wait_until, "load")
+        wait_for_load_state(fresh_frame, wait_until, options)
+
+      System.monotonic_time(:millisecond) > deadline ->
+        {:error, %Playwright.SDK.Channel.Error{type: "TimeoutError", message: "Timeout waiting for URL to match pattern"}}
+
+      true ->
+        Process.sleep(poll_interval)
+        wait_for_url_loop(frame, matcher, deadline, poll_interval, options)
+    end
+  end
 
   # ---
 

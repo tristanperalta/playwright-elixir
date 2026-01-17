@@ -23,11 +23,11 @@ This document tracks the implementation status of Playwright features in playwri
 |--------|--------|-------|
 | `goto(url, options)` | [x] | |
 | `reload(options)` | [x] | |
-| `goBack(options)` | [ ] | !Priority |
-| `goForward(options)` | [ ] | !Priority |
+| `goBack(options)` | [x] | |
+| `goForward(options)` | [x] | |
 | `waitForLoadState(state, options)` | [x] | |
 | `waitForNavigation(options)` | [ ] | !Priority - commonly needed |
-| `waitForURL(url, options)` | [ ] | !Priority |
+| `waitForURL(url, options)` | [x] | Polling-based implementation |
 | `waitForRequest(urlOrPredicate, options)` | [ ] | |
 | `waitForResponse(urlOrPredicate, options)` | [ ] | |
 | `waitForEvent(event, options)` | [~] | As `expect_event` |
@@ -607,9 +607,9 @@ These modules exist but have no implemented methods (all commented out):
 ## Priority Implementation Roadmap
 
 ### Phase 1: Core Navigation & Waiting (High Impact)
-1. `Page.goBack()` / `Page.goForward()`
+1. ~~`Page.goBack()` / `Page.goForward()`~~ DONE
 2. `Page.waitForNavigation()`
-3. `Page.waitForURL()`
+3. ~~`Page.waitForURL()`~~ DONE
 4. `Dialog.accept()` / `Dialog.dismiss()`
 
 ### Phase 2: Modern Locators (Developer Experience)
