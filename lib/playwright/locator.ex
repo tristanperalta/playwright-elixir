@@ -660,14 +660,60 @@ defmodule Playwright.Locator do
   # @spec get_by_alt_text(Locator.t(), binary(), options()) :: Locator.t()
   # def get_by_alt_text(locator, text, options \\ %{})
 
-  # @spec get_by_label(Locator.t(), binary(), options()) :: Locator.t()
-  # def get_by_label(locator, text, options \\ %{})
+  @doc """
+  Allows locating elements by their associated label text.
+
+  ## Arguments
+
+  | key/name   | type   |            | description |
+  | ---------- | ------ | ---------- | ----------- |
+  | `text`     | param  | `binary()` | Label text to locate. |
+  | `:exact`   | option | `boolean()`| Whether to find an exact match: case-sensitive and whole-string. Default to false. |
+  """
+  @spec get_by_label(t(), binary(), %{optional(:exact) => boolean()}) :: t()
+  def get_by_label(locator, text, options \\ %{}) when is_binary(text) do
+    locator |> Locator.locator(get_by_label_selector(text, options))
+  end
 
   # @spec get_by_placeholder(Locator.t(), binary(), options()) :: Locator.t()
   # def get_by_placeholder(locator, text, options \\ %{})
 
-  # @spec get_by_test_id(Locator.t(), binary(), options()) :: Locator.t()
-  # def get_by_test_id(locator, text, options \\ %{})
+  @doc """
+  Allows locating elements by ARIA role.
+
+  ## Arguments
+
+  | key/name         | type   |            | description |
+  | ---------------- | ------ | ---------- | ----------- |
+  | `role`           | param  | `binary()` | ARIA role (e.g., "button", "heading"). |
+  | `:name`          | option | `binary()` | Filter by accessible name. |
+  | `:exact`         | option | `boolean()`| Exact name match. Default to false. |
+  | `:checked`       | option | `boolean()`| Filter by checked state. |
+  | `:disabled`      | option | `boolean()`| Filter by disabled state. |
+  | `:expanded`      | option | `boolean()`| Filter by expanded state. |
+  | `:include_hidden`| option | `boolean()`| Include hidden elements. |
+  | `:level`         | option | `integer()`| Heading level (1-6). |
+  | `:pressed`       | option | `boolean()`| Filter by pressed state. |
+  | `:selected`      | option | `boolean()`| Filter by selected state. |
+  """
+  @spec get_by_role(t(), binary(), map()) :: t()
+  def get_by_role(locator, role, options \\ %{}) when is_binary(role) do
+    locator |> Locator.locator(get_by_role_selector(role, options))
+  end
+
+  @doc """
+  Allows locating elements by their test id attribute (data-testid by default).
+
+  ## Arguments
+
+  | key/name   | type   |            | description |
+  | ---------- | ------ | ---------- | ----------- |
+  | `test_id`  | param  | `binary()` | The test id to locate. |
+  """
+  @spec get_by_test_id(t(), binary()) :: t()
+  def get_by_test_id(locator, test_id) when is_binary(test_id) do
+    locator |> Locator.locator(get_by_test_id_selector(test_id))
+  end
 
   @doc """
   Allows locating elements that contain given text.
@@ -701,6 +747,65 @@ defmodule Playwright.Locator do
       end
 
     "internal:text=\"#{text}\"" <> selector_suffix
+  end
+
+  @doc false
+  def get_by_test_id_selector(test_id) do
+    escaped = escape_for_attribute_selector(test_id, true)
+    "internal:testid=[data-testid=#{escaped}]"
+  end
+
+  @doc false
+  def get_by_label_selector(text, options \\ %{}) do
+    exact = Map.get(options, :exact, false)
+    escaped = escape_for_text_selector(text, exact)
+    "internal:label=#{escaped}"
+  end
+
+  @doc false
+  def get_by_role_selector(role, options \\ %{}) do
+    props =
+      []
+      |> maybe_add_prop(options, :checked)
+      |> maybe_add_prop(options, :disabled)
+      |> maybe_add_prop(options, :selected)
+      |> maybe_add_prop(options, :expanded)
+      |> maybe_add_prop(options, :include_hidden, "include-hidden")
+      |> maybe_add_prop(options, :level)
+      |> maybe_add_prop(options, :pressed)
+
+    props =
+      if Map.has_key?(options, :name) do
+        exact = Map.get(options, :exact, false)
+        escaped = escape_for_attribute_selector(options.name, exact)
+        props ++ [["name", escaped]]
+      else
+        props
+      end
+
+    props_str = Enum.map_join(props, "", fn [n, v] -> "[#{n}=#{v}]" end)
+    "internal:role=#{role}#{props_str}"
+  end
+
+  defp maybe_add_prop(props, options, key, attr_name \\ nil) do
+    attr_name = attr_name || Atom.to_string(key)
+
+    if Map.has_key?(options, key) do
+      props ++ [[attr_name, "#{Map.get(options, key)}"]]
+    else
+      props
+    end
+  end
+
+  defp escape_for_text_selector(text, exact) do
+    suffix = if exact, do: "s", else: "i"
+    "\"#{text}\"#{suffix}"
+  end
+
+  defp escape_for_attribute_selector(value, exact) do
+    escaped = value |> String.replace("\\", "\\\\") |> String.replace("\"", "\\\"")
+    suffix = if exact, do: "s", else: "i"
+    "\"#{escaped}\"#{suffix}"
   end
 
   # @spec get_by_title(Locator.t(), binary(), options()) :: Locator.t()

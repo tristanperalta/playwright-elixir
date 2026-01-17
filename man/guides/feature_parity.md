@@ -62,9 +62,9 @@ This document tracks the implementation status of Playwright features in playwri
 |--------|--------|-------|
 | `locator(selector, options)` | [x] | |
 | `getByText(text, options)` | [x] | |
-| `getByRole(role, options)` | [ ] | !Priority - accessibility testing |
-| `getByTestId(testId)` | [ ] | !Priority - common pattern |
-| `getByLabel(text, options)` | [ ] | !Priority - form testing |
+| `getByRole(role, options)` | [x] | |
+| `getByTestId(testId)` | [x] | |
+| `getByLabel(text, options)` | [x] | |
 | `getByPlaceholder(text, options)` | [ ] | |
 | `getByAltText(text, options)` | [ ] | |
 | `getByTitle(text, options)` | [ ] | |
@@ -190,9 +190,9 @@ This document tracks the implementation status of Playwright features in playwri
 | `and(locator)` | [ ] | Combine locators |
 | `or(locator)` | [x] | As `or_` |
 | `getByText(text, options)` | [x] | |
-| `getByRole(role, options)` | [ ] | !Priority |
-| `getByTestId(testId)` | [ ] | !Priority |
-| `getByLabel(text, options)` | [ ] | !Priority |
+| `getByRole(role, options)` | [x] | |
+| `getByTestId(testId)` | [x] | |
+| `getByLabel(text, options)` | [x] | |
 | `getByPlaceholder(text, options)` | [ ] | |
 | `getByAltText(text, options)` | [ ] | |
 | `getByTitle(text, options)` | [ ] | |
@@ -432,9 +432,9 @@ This document tracks the implementation status of Playwright features in playwri
 |--------|--------|-------|
 | `locator(selector, options)` | [x] | |
 | `getByText(text, options)` | [x] | |
-| `getByRole(role, options)` | [ ] | |
-| `getByTestId(testId)` | [ ] | |
-| `getByLabel(text, options)` | [ ] | |
+| `getByRole(role, options)` | [x] | |
+| `getByTestId(testId)` | [x] | |
+| `getByLabel(text, options)` | [x] | |
 | `getByPlaceholder(text, options)` | [ ] | |
 | `getByAltText(text, options)` | [ ] | |
 | `getByTitle(text, options)` | [ ] | |
@@ -610,12 +610,12 @@ These modules exist but have no implemented methods (all commented out):
 1. ~~`Page.goBack()` / `Page.goForward()`~~ DONE
 2. `Page.waitForNavigation()`
 3. ~~`Page.waitForURL()`~~ DONE
-4. `Dialog.accept()` / `Dialog.dismiss()`
+4. ~~`Dialog.accept()` / `Dialog.dismiss()`~~ DONE
 
 ### Phase 2: Modern Locators (Developer Experience)
-1. `*.getByRole()`
-2. `*.getByTestId()`
-3. `*.getByLabel()`
+1. ~~`*.getByRole()`~~ DONE
+2. ~~`*.getByTestId()`~~ DONE
+3. ~~`*.getByLabel()`~~ DONE
 4. `Locator.filter()`
 
 ### Phase 3: Session & State (Testing Infrastructure)

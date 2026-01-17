@@ -441,17 +441,60 @@ defmodule Playwright.Frame do
   # @spec get_by_alt_text(Frame.t(), binary(), options()) :: Playwright.Locator.t() | nil
   # def get_by_alt_text(frame, text, options \\ %{})
 
-  # @spec get_by_label(Frame.t(), binary(), options()) :: Playwright.Locator.t() | nil
-  # def get_by_label(frame, text, options \\ %{})
+  @doc """
+  Allows locating elements by their associated label text.
+
+  ## Arguments
+
+  | key/name   | type   |            | description |
+  | ---------- | ------ | ---------- | ----------- |
+  | `text`     | param  | `binary()` | Label text to locate. |
+  | `:exact`   | option | `boolean()`| Whether to find an exact match. Default to false. |
+  """
+  @spec get_by_label(t(), binary(), %{optional(:exact) => boolean()}) :: Playwright.Locator.t()
+  def get_by_label(frame, text, options \\ %{}) when is_binary(text) do
+    locator(frame, Locator.get_by_label_selector(text, options))
+  end
 
   # @spec get_by_placeholder(Frame.t(), binary(), options()) :: Playwright.Locator.t() | nil
   # def get_by_placeholder(frame, text, options \\ %{})
 
-  # @spec get_by_role(Frame.t(), binary(), options()) :: Playwright.Locator.t() | nil
-  # def get_by_role(frame, text, options \\ %{})
+  @doc """
+  Allows locating elements by ARIA role.
 
-  # @spec get_by_test_id(Frame.t(), binary(), options()) :: Playwright.Locator.t() | nil
-  # def get_by_test_id(frame, text, options \\ %{})
+  ## Arguments
+
+  | key/name         | type   |            | description |
+  | ---------------- | ------ | ---------- | ----------- |
+  | `role`           | param  | `binary()` | ARIA role (e.g., "button", "heading"). |
+  | `:name`          | option | `binary()` | Filter by accessible name. |
+  | `:exact`         | option | `boolean()`| Exact name match. Default to false. |
+  | `:checked`       | option | `boolean()`| Filter by checked state. |
+  | `:disabled`      | option | `boolean()`| Filter by disabled state. |
+  | `:expanded`      | option | `boolean()`| Filter by expanded state. |
+  | `:include_hidden`| option | `boolean()`| Include hidden elements. |
+  | `:level`         | option | `integer()`| Heading level (1-6). |
+  | `:pressed`       | option | `boolean()`| Filter by pressed state. |
+  | `:selected`      | option | `boolean()`| Filter by selected state. |
+  """
+  @spec get_by_role(t(), binary(), map()) :: Playwright.Locator.t()
+  def get_by_role(frame, role, options \\ %{}) when is_binary(role) do
+    locator(frame, Locator.get_by_role_selector(role, options))
+  end
+
+  @doc """
+  Allows locating elements by their test id attribute (data-testid by default).
+
+  ## Arguments
+
+  | key/name   | type   |            | description |
+  | ---------- | ------ | ---------- | ----------- |
+  | `test_id`  | param  | `binary()` | The test id to locate. |
+  """
+  @spec get_by_test_id(t(), binary()) :: Playwright.Locator.t()
+  def get_by_test_id(frame, test_id) when is_binary(test_id) do
+    locator(frame, Locator.get_by_test_id_selector(test_id))
+  end
 
   @doc """
   Allows locating elements that contain given text.
