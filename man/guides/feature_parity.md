@@ -210,7 +210,7 @@ This document tracks the implementation status of Playwright features in playwri
 | `fill(value, options)` | [x] | |
 | `clear(options)` | [x] | |
 | `type(text, options)` | [x] | Deprecated |
-| `pressSequentially(text, options)` | [ ] | Replaces type |
+| `pressSequentially(text, options)` | [x] | As `press_sequentially` |
 | `press(key, options)` | [x] | |
 | `hover(options)` | [x] | |
 | `focus(options)` | [x] | |

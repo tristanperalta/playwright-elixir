@@ -1526,6 +1526,41 @@ defmodule Playwright.Locator do
   end
 
   @doc """
+  Types text into the element character by character, as if it was a user with a keyboard.
+
+  This method focuses the element, and then sends a `keydown`, `keypress`/`input`,
+  and `keyup` event for each character in the text.
+
+  This is the non-deprecated replacement for `type/3`.
+
+  ## Arguments
+
+  | key/name | type   |             | description                       |
+  | -------- | ------ | ----------- | --------------------------------- |
+  | `text`   | param  | `binary()`  | Text to type into the element.    |
+
+  ## Options
+
+  | key/name         | type   |             | description                       |
+  | ---------------- | ------ | ----------- | --------------------------------- |
+  | `:delay`         | option | `number()`  | Time between key presses in ms.   |
+  | `:no_wait_after` | option | `boolean()` | Don't wait for navigations.       |
+  | `:timeout`       | option | `number()`  | Maximum time in milliseconds.     |
+
+  ## Returns
+
+  - `:ok`
+
+  ## Example
+
+      locator |> Locator.press_sequentially("Hello World!")
+  """
+  @spec press_sequentially(t(), binary(), options_keyboard()) :: :ok
+  def press_sequentially(%Locator{} = locator, text, options \\ %{}) do
+    type(locator, text, options)
+  end
+
+  @doc """
   Unchecks the (checkmark) element by performing the following steps:
 
     1. Ensure that element is a checkbox or a radio input. If not, this method

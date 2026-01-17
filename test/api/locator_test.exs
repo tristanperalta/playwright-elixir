@@ -749,6 +749,26 @@ defmodule Playwright.LocatorTest do
     end
   end
 
+  describe "Locator.press_sequentially/3" do
+    test "types text character by character", %{page: page} do
+      Page.set_content(page, ~s|<input type="text" />|)
+      locator = Page.locator(page, "input")
+
+      Locator.press_sequentially(locator, "Hello")
+
+      assert Locator.input_value(locator) == "Hello"
+    end
+
+    test "respects delay option", %{page: page} do
+      Page.set_content(page, ~s|<input type="text" />|)
+      locator = Page.locator(page, "input")
+
+      Locator.press_sequentially(locator, "Hi", %{delay: 10})
+
+      assert Locator.input_value(locator) == "Hi"
+    end
+  end
+
   describe "Locator.screenshot/2" do
     test "captures an image of the element", %{assets: assets, page: page} do
       fixture = File.read!("test/support/fixtures/screenshot-element-bounding-box-chromium.png")
