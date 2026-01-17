@@ -21,7 +21,7 @@ defmodule Playwright.Browser do
     - `:version`
   """
   use Playwright.SDK.ChannelOwner
-  alias Playwright.{Browser, BrowserContext, Page}
+  alias Playwright.{Browser, BrowserContext, BrowserType, Page}
   alias Playwright.SDK.{Channel, ChannelOwner, Extra}
 
   @property :name
@@ -44,8 +44,32 @@ defmodule Playwright.Browser do
   # API
   # ---------------------------------------------------------------------------
 
-  # @spec browser_type(t()) :: BrowserType.t()
-  # def browser_type(browser)
+  @doc """
+  Returns the BrowserType that was used to launch this browser.
+
+  ## Returns
+
+  - `BrowserType.t()`
+  """
+  @spec browser_type(t()) :: BrowserType.t()
+  def browser_type(%Browser{parent: parent}), do: parent
+
+  @doc """
+  Returns whether the browser is still connected.
+
+  Returns `false` after the browser has been closed.
+
+  ## Returns
+
+  - `boolean()`
+  """
+  @spec is_connected(t()) :: boolean()
+  def is_connected(%Browser{session: session, guid: guid}) do
+    case Channel.find(session, {:guid, guid}, %{timeout: 100}) do
+      %Browser{} -> true
+      {:error, _} -> false
+    end
+  end
 
   @doc """
   Closes the browser.
@@ -93,9 +117,6 @@ defmodule Playwright.Browser do
   def contexts(%Browser{} = browser) do
     Channel.list(browser.session, {:guid, browser.guid}, "BrowserContext")
   end
-
-  # @spec is_connected(BrowserContext.t()) :: boolean()
-  # def is_connected(browser)
 
   # @spec new_browser_cdp_session(BrowserContext.t()) :: Playwright.CDPSession.t()
   # def new_browser_cdp_session(browser)

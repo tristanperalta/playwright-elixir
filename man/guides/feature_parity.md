@@ -381,8 +381,8 @@ This document tracks the implementation status of Playwright features in playwri
 | `newPage(options)` | [x] | Returns `{:ok, page}` |
 | `contexts()` | [x] | |
 | `close()` | [x] | |
-| `isConnected()` | [ ] | |
-| `browserType()` | [ ] | |
+| `isConnected()` | [x] | |
+| `browserType()` | [x] | |
 | `version` | [x] | Property |
 | `name` | [x] | Property |
 | `newBrowserCDPSession()` | [ ] | |
