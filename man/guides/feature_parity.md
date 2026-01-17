@@ -524,14 +524,14 @@ These modules exist but have no implemented methods (all commented out):
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `cancel()` | [ ] | |
-| `delete()` | [ ] | |
-| `failure()` | [ ] | |
-| `page()` | [ ] | |
-| `path()` | [ ] | !Priority |
-| `saveAs(path)` | [ ] | !Priority |
-| `suggestedFilename()` | [ ] | |
-| `url()` | [ ] | |
+| `cancel()` | [x] | |
+| `delete()` | [x] | |
+| `failure()` | [x] | |
+| `page()` | [x] | |
+| `path()` | [x] | |
+| `saveAs(path)` | [x] | |
+| `suggestedFilename()` | [x] | |
+| `url()` | [x] | |
 
 ### Coverage (`lib/playwright/page/coverage.ex`)
 
@@ -621,7 +621,7 @@ These modules exist but have no implemented methods (all commented out):
 ### Phase 3: Session & State (Testing Infrastructure)
 1. ~~`BrowserContext.storageState()`~~ DONE
 2. ~~`BrowserContext.setGeolocation()`~~ DONE
-3. `Download.saveAs()` / `Download.path()`
+3. ~~`Download.saveAs()` / `Download.path()`~~ DONE
 
 ### Phase 4: Advanced Features
 1. `Mouse` module
