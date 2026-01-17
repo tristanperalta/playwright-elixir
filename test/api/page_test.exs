@@ -4,6 +4,43 @@ defmodule Playwright.PageTest do
   alias Playwright.SDK.Channel
   alias Playwright.SDK.Channel.{Error, Event}
 
+  describe "Page.check/3 and Page.uncheck/3" do
+    test "checks and unchecks a checkbox", %{page: page} do
+      Page.set_content(page, ~s|<input type="checkbox" id="agree" />|)
+
+      refute Page.is_checked(page, "#agree")
+
+      Page.check(page, "#agree")
+      assert Page.is_checked(page, "#agree")
+
+      Page.uncheck(page, "#agree")
+      refute Page.is_checked(page, "#agree")
+    end
+  end
+
+  describe "Page.set_checked/4" do
+    test "sets checkbox state based on boolean", %{page: page} do
+      Page.set_content(page, ~s|<input type="checkbox" id="agree" />|)
+
+      Page.set_checked(page, "#agree", true)
+      assert Page.is_checked(page, "#agree")
+
+      Page.set_checked(page, "#agree", false)
+      refute Page.is_checked(page, "#agree")
+    end
+  end
+
+  describe "Page.set_input_files/4" do
+    test "sets files on a file input", %{page: page} do
+      Page.set_content(page, ~s|<input type="file" id="upload" />|)
+
+      Page.set_input_files(page, "#upload", "test/support/fixtures/file-to-upload.txt")
+
+      filename = Page.eval_on_selector(page, "#upload", "e => e.files[0].name")
+      assert filename == "file-to-upload.txt"
+    end
+  end
+
   describe "Page.drag_and_drop/4" do
     test "returns 'subject'", %{assets: assets, page: page} do
       page |> Page.goto(assets.prefix <> "/drag-n-drop.html")

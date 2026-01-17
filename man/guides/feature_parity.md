@@ -82,10 +82,10 @@ This document tracks the implementation status of Playwright features in playwri
 | `hover(selector, options)` | [x] | |
 | `focus(selector, options)` | [x] | |
 | `selectOption(selector, values, options)` | [x] | |
-| `check(selector, options)` | [ ] | |
-| `uncheck(selector, options)` | [ ] | |
-| `setChecked(selector, checked, options)` | [ ] | |
-| `setInputFiles(selector, files, options)` | [ ] | |
+| `check(selector, options)` | [x] | |
+| `uncheck(selector, options)` | [x] | |
+| `setChecked(selector, checked, options)` | [x] | |
+| `setInputFiles(selector, files, options)` | [x] | |
 | `dragAndDrop(source, target, options)` | [x] | |
 | `dispatchEvent(selector, type, eventInit, options)` | [x] | |
 

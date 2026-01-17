@@ -185,6 +185,26 @@ defmodule Playwright.Page do
 
   # ---
 
+  @doc """
+  Checks a checkbox or radio element.
+
+  ## Arguments
+
+  | key/name   | type   |             | description                          |
+  | ---------- | ------ | ----------- | ------------------------------------ |
+  | `selector` | param  | `binary()`  | Selector to search for the element.  |
+
+  ## Returns
+
+  - `:ok`
+  """
+  @spec check(t(), binary(), options()) :: :ok
+  def check(%Page{} = page, selector, options \\ %{}) do
+    main_frame(page) |> Frame.check(selector, options)
+  end
+
+  # ---
+
   @spec click(t(), binary(), options()) :: :ok
   def click(%Page{} = page, selector, options \\ %{}) do
     main_frame(page) |> Frame.click(selector, options)
@@ -865,14 +885,51 @@ defmodule Playwright.Page do
 
   # ---
 
-  # @spec set_checked(t(), binary(), boolean(), options()) :: :ok
-  # def set_checked(page, selector, checked, options \\ %{})
+  @doc """
+  Sets the checked state of a checkbox or radio element.
+
+  ## Arguments
+
+  | key/name   | type   |             | description                          |
+  | ---------- | ------ | ----------- | ------------------------------------ |
+  | `selector` | param  | `binary()`  | Selector to search for the element.  |
+  | `checked`  | param  | `boolean()` | Whether to check or uncheck.         |
+
+  ## Returns
+
+  - `:ok`
+  """
+  @spec set_checked(t(), binary(), boolean(), options()) :: :ok
+  def set_checked(%Page{} = page, selector, checked, options \\ %{}) do
+    main_frame(page) |> Frame.set_checked(selector, checked, options)
+  end
 
   # ---
 
   @spec set_content(t(), binary(), options()) :: :ok
   def set_content(%Page{} = page, html, options \\ %{}) do
     main_frame(page) |> Frame.set_content(html, options)
+  end
+
+  # ---
+
+  @doc """
+  Sets the value of a file input element.
+
+  ## Arguments
+
+  | key/name   | type   |             | description                          |
+  | ---------- | ------ | ----------- | ------------------------------------ |
+  | `selector` | param  | `binary()`  | Selector to search for the element.  |
+  | `files`    | param  | `any()`     | File path(s) or file payload(s).     |
+
+  ## Returns
+
+  - `:ok`
+  """
+  @spec set_input_files(t(), binary(), any(), options()) :: :ok
+  def set_input_files(%Page{} = page, selector, files, options \\ %{}) do
+    main_frame(page) |> Frame.set_input_files(selector, files, options)
   end
 
   # NOTE: these 2 are good examples of functions that should `cast` instead of `call`.
@@ -948,6 +1005,26 @@ defmodule Playwright.Page do
   @spec title(t()) :: binary()
   def title(%Page{} = page) do
     main_frame(page) |> Frame.title()
+  end
+
+  # ---
+
+  @doc """
+  Unchecks a checkbox or radio element.
+
+  ## Arguments
+
+  | key/name   | type   |             | description                          |
+  | ---------- | ------ | ----------- | ------------------------------------ |
+  | `selector` | param  | `binary()`  | Selector to search for the element.  |
+
+  ## Returns
+
+  - `:ok`
+  """
+  @spec uncheck(t(), binary(), options()) :: :ok
+  def uncheck(%Page{} = page, selector, options \\ %{}) do
+    main_frame(page) |> Frame.uncheck(selector, options)
   end
 
   # ---

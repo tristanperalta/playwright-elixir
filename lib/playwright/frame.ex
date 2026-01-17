@@ -912,8 +912,28 @@ defmodule Playwright.Frame do
 
   # ---
 
-  # @spec set_checked(Frame.t(), boolean(), options()) :: :ok
-  # def set_checked(frame, checked, options \\ %{})
+  @doc """
+  Sets the checked state of a checkbox or radio element.
+
+  ## Arguments
+
+  | key/name   | type   |             | description                          |
+  | ---------- | ------ | ----------- | ------------------------------------ |
+  | `selector` | param  | `binary()`  | Selector to search for the element.  |
+  | `checked`  | param  | `boolean()` | Whether to check or uncheck.         |
+
+  ## Returns
+
+  - `:ok`
+  """
+  @spec set_checked(t(), binary(), boolean(), options()) :: :ok
+  def set_checked(%Frame{} = frame, selector, checked, options \\ %{}) do
+    if checked do
+      check(frame, selector, options)
+    else
+      uncheck(frame, selector, options)
+    end
+  end
 
   # ---
 
