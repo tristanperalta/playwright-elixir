@@ -21,8 +21,9 @@ defmodule Playwright.SDK.Channel.MessageTest do
       is_default = Message.new("guid", "method")
       has_params = Message.new("guid", "method", %{key: "value"})
 
-      assert is_default.params == %{}
-      assert has_params.params == %{"key" => "value"}
+      # Default params include timeout (required as of Playwright 1.57+)
+      assert is_default.params == %{"timeout" => 30_000}
+      assert has_params.params == %{"key" => "value", "timeout" => 30_000}
     end
   end
 end

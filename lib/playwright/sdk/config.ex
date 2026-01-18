@@ -227,7 +227,8 @@ defmodule Playwright.SDK.Config do
         :downloads_path,
         :executable_path,
         :headless,
-        :driver_path
+        :driver_path,
+        timeout: 30_000
       ]
     end
 

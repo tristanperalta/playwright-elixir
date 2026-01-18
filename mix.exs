@@ -20,7 +20,7 @@ defmodule Playwright.MixProject do
       preferred_cli_env: [credo: :test, dialyzer: :test, docs: :docs, precommit: :test],
       source_url: @source_url,
       start_permanent: Mix.env() == :prod,
-      version: "1.49.1-alpha.2"
+      version: "1.57.0-alpha.1"
     ]
   end
 

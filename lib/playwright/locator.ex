@@ -18,11 +18,12 @@ defmodule Playwright.Locator do
   alias Playwright.SDK.Channel
 
   @enforce_keys [:frame, :selector]
-  defstruct [:frame, :selector]
+  defstruct [:frame, :selector, :page]
 
   @type t() :: %__MODULE__{
           frame: Playwright.Frame.t(),
-          selector: selector()
+          selector: selector(),
+          page: Playwright.Page.t() | nil
         }
 
   @type options() :: %{optional(:timeout) => non_neg_integer()}
@@ -83,7 +84,8 @@ defmodule Playwright.Locator do
   def new(%Page{} = page, selector) do
     %__MODULE__{
       frame: Page.main_frame(page),
-      selector: selector
+      selector: selector,
+      page: page
     }
   end
 
@@ -675,7 +677,7 @@ defmodule Playwright.Locator do
       Locator.filter(locator, has_text: "Item", visible: true)
   """
   @spec filter(t(), keyword()) :: t()
-  def filter(%Locator{frame: frame, selector: selector}, options) when is_list(options) do
+  def filter(%Locator{frame: frame, selector: selector, page: page}, options) when is_list(options) do
     filtered_selector =
       Enum.reduce(options, selector, fn
         {:has_text, text}, acc ->
@@ -706,7 +708,7 @@ defmodule Playwright.Locator do
           raise ArgumentError, "Unknown filter option: #{inspect(key)}"
       end)
 
-    new(frame, filtered_selector)
+    %Locator{frame: frame, selector: filtered_selector, page: page}
   end
 
   @doc """
@@ -1200,8 +1202,12 @@ defmodule Playwright.Locator do
   Returns a new `Playwright.Locator` scoped to the Locator's subtree.
   """
   @spec locator(t(), binary()) :: Locator.t()
-  def locator(%Locator{} = locator, selector) do
-    Locator.new(locator.frame, "#{locator.selector} >> #{selector}")
+  def locator(%Locator{frame: frame, selector: base_selector, page: page}, selector) do
+    %Locator{
+      frame: frame,
+      selector: "#{base_selector} >> #{selector}",
+      page: page
+    }
   end
 
   @doc """
@@ -1234,8 +1240,12 @@ defmodule Playwright.Locator do
       |> Locator.and_(Page.locator(page, ".highlighted"))
   """
   @spec and_(t(), t()) :: t()
-  def and_(%Locator{frame: frame} = locator, %Locator{frame: frame} = other) do
-    new(frame, locator.selector <> " >> internal:and=" <> Jason.encode!(other.selector))
+  def and_(%Locator{frame: frame, page: page} = locator, %Locator{frame: frame, page: other_page} = other) do
+    %Locator{
+      frame: frame,
+      selector: locator.selector <> " >> internal:and=" <> Jason.encode!(other.selector),
+      page: page || other_page
+    }
   end
 
   def and_(_, _) do
@@ -1248,8 +1258,12 @@ defmodule Playwright.Locator do
   This implements the `or` function for locators, but `or` is not an allowed function name in Elixir.
   """
   @spec or_(Locator.t(), Locator.t()) :: Locator.t()
-  def or_(%Locator{frame: frame} = locator, %Locator{frame: frame} = other) do
-    new(frame, locator.selector <> " >> internal:or=" <> Jason.encode!(other.selector))
+  def or_(%Locator{frame: frame, page: page} = locator, %Locator{frame: frame, page: other_page} = other) do
+    %Locator{
+      frame: frame,
+      selector: locator.selector <> " >> internal:or=" <> Jason.encode!(other.selector),
+      page: page || other_page
+    }
   end
 
   def or_(_, _) do
@@ -1264,6 +1278,10 @@ defmodule Playwright.Locator do
   - `Page.t()`
   """
   @spec page(t()) :: Page.t()
+  def page(%Locator{page: page}) when not is_nil(page) do
+    page
+  end
+
   def page(%Locator{frame: frame}) do
     Frame.page(frame)
   end

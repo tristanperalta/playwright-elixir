@@ -3,7 +3,7 @@ defmodule Playwright.SDK.Helpers.ErrorHandling do
   alias Playwright.SDK.Channel.Error
 
   def with_timeout(options, action) when is_map(options) and is_function(action) do
-    timeout = options |> Map.get(:timeout, 30_000)
+    timeout = options |> Map.get(:timeout, 30_000) |> to_integer()
 
     try do
       # In most cases (as of 20240802), the timeout value provided here is also
@@ -18,4 +18,7 @@ defmodule Playwright.SDK.Helpers.ErrorHandling do
         {:error, Error.new(%{error: %{message: "Timeout #{inspect(timeout)}ms exceeded."}}, nil)}
     end
   end
+
+  defp to_integer(value) when is_float(value), do: trunc(value)
+  defp to_integer(value) when is_integer(value), do: value
 end

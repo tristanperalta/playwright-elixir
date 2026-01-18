@@ -91,7 +91,7 @@ defmodule Playwright.Page do
     end)
 
     Channel.bind(session, {:guid, page.guid}, :viewport_size_changed, fn %{params: params, target: target} ->
-      {:patch, %{target | viewport_size: params.viewport_size}}
+      {:patch, %{target | viewport_size: params.viewportSize}}
     end)
 
     Channel.bind(session, {:guid, page.guid}, :video, fn %{params: %{artifact: artifact}} ->

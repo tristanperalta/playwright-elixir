@@ -683,10 +683,7 @@ defmodule Playwright.PageTest do
   end
 
   describe "Page.console_messages/1" do
-    @tag :skip
-    @tag :requires_playwright_upgrade
     test "returns collected console messages", %{page: page} do
-      # Requires Playwright > 1.49.1
       Page.goto(page, "data:text/html,<script>console.log('test message');</script>")
       messages = Page.console_messages(page)
       assert is_list(messages)
@@ -694,10 +691,7 @@ defmodule Playwright.PageTest do
   end
 
   describe "Page.page_errors/1" do
-    @tag :skip
-    @tag :requires_playwright_upgrade
     test "returns collected page errors", %{page: page} do
-      # Requires Playwright > 1.49.1
       Page.goto(page, "data:text/html,<script>throw new Error('test error');</script>")
       errors = Page.page_errors(page)
       assert is_list(errors)

@@ -29,13 +29,24 @@ defmodule Playwright.SDK.Channel.Message do
   # are optional here and are passed to the Playwright server. They may actually
   # be required for the server-side `method` to make sense.
   def new(guid, method, params \\ %{}) do
+    params_with_timeout = ensure_timeout(params)
+
     %Channel.Message{
       guid: guid,
       id: System.unique_integer([:monotonic, :positive]),
       method: camelize(method),
-      params: deep_camelize_keys(params),
+      params: deep_camelize_keys(params_with_timeout),
       metadata: %{}
     }
+  end
+
+  # Playwright 1.57+ requires timeout parameter for most methods
+  defp ensure_timeout(params) when is_map(params) do
+    Map.put_new(params, :timeout, 30_000)
+  end
+
+  defp ensure_timeout(params) when is_list(params) do
+    Keyword.put_new(params, :timeout, 30_000)
   end
 
   # private
