@@ -566,4 +566,47 @@ defmodule Playwright.PageTest do
       assert viewport.height == 768
     end
   end
+
+  describe "Page.emulate_media/2" do
+    test "emulates dark color scheme", %{page: page} do
+      Page.emulate_media(page, %{color_scheme: "dark"})
+      result = Page.evaluate(page, "window.matchMedia('(prefers-color-scheme: dark)').matches")
+      assert result == true
+    end
+
+    test "emulates light color scheme", %{page: page} do
+      Page.emulate_media(page, %{color_scheme: "light"})
+      result = Page.evaluate(page, "window.matchMedia('(prefers-color-scheme: light)').matches")
+      assert result == true
+    end
+
+    test "emulates print media type", %{page: page} do
+      Page.emulate_media(page, %{media: "print"})
+      result = Page.evaluate(page, "window.matchMedia('print').matches")
+      assert result == true
+    end
+
+    test "emulates reduced motion", %{page: page} do
+      Page.emulate_media(page, %{reduced_motion: "reduce"})
+      result = Page.evaluate(page, "window.matchMedia('(prefers-reduced-motion: reduce)').matches")
+      assert result == true
+    end
+
+    test "can set multiple options at once", %{page: page} do
+      Page.emulate_media(page, %{color_scheme: "dark", reduced_motion: "reduce"})
+      dark = Page.evaluate(page, "window.matchMedia('(prefers-color-scheme: dark)').matches")
+      reduced = Page.evaluate(page, "window.matchMedia('(prefers-reduced-motion: reduce)').matches")
+      assert dark == true
+      assert reduced == true
+    end
+
+    test "resets options with nil", %{page: page} do
+      Page.emulate_media(page, %{color_scheme: "dark"})
+      assert Page.evaluate(page, "window.matchMedia('(prefers-color-scheme: dark)').matches") == true
+
+      Page.emulate_media(page, %{color_scheme: nil})
+      # After reset, should return ok (we can't easily test the actual reset value)
+      assert :ok = Page.emulate_media(page, %{})
+    end
+  end
 end

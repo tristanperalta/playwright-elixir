@@ -317,8 +317,50 @@ defmodule Playwright.Page do
 
   # ---
 
-  # @spec emulate_media(t(), options()) :: :ok
-  # def emulate_media(page, options \\ %{})
+  @doc """
+  Emulates CSS media features on the page.
+
+  This method changes the CSS media type and media features for the page.
+  Pass `nil` for any option to reset it to the default value.
+
+  ## Arguments
+
+  | key/name          | type                                              | description                  |
+  | ----------------- | ------------------------------------------------- | ---------------------------- |
+  | `:media`          | `"screen"` \\| `"print"` \\| `nil`                | Media type to emulate.       |
+  | `:color_scheme`   | `"dark"` \\| `"light"` \\| `"no-preference"` \\| `nil` | Color scheme to emulate. |
+  | `:reduced_motion` | `"reduce"` \\| `"no-preference"` \\| `nil`        | Reduced motion preference.   |
+  | `:forced_colors`  | `"active"` \\| `"none"` \\| `nil`                 | Forced colors mode.          |
+  | `:contrast`       | `"more"` \\| `"no-preference"` \\| `nil`          | Contrast preference.         |
+
+  ## Returns
+
+  - `:ok`
+
+  ## Example
+
+      # Emulate dark mode
+      Page.emulate_media(page, %{color_scheme: "dark"})
+
+      # Emulate print media
+      Page.emulate_media(page, %{media: "print"})
+
+      # Reset to defaults
+      Page.emulate_media(page, %{color_scheme: nil, media: nil})
+  """
+  @spec emulate_media(t(), map()) :: :ok
+  def emulate_media(%Page{session: session, guid: guid}, options \\ %{}) do
+    params = %{
+      media: normalize_media_option(options[:media]),
+      colorScheme: normalize_media_option(options[:color_scheme]),
+      reducedMotion: normalize_media_option(options[:reduced_motion]),
+      forcedColors: normalize_media_option(options[:forced_colors]),
+      contrast: normalize_media_option(options[:contrast])
+    }
+
+    Channel.post(session, {:guid, guid}, :emulate_media, params)
+    :ok
+  end
 
   # ---
 
@@ -1002,6 +1044,9 @@ defmodule Playwright.Page do
       {value, map} -> Map.put(map, new_key, value)
     end
   end
+
+  defp normalize_media_option(nil), do: "no-override"
+  defp normalize_media_option(value), do: value
 
   defp build_request_predicate(session, predicate) when is_function(predicate) do
     fn _resource, event ->
