@@ -343,6 +343,13 @@ defmodule Playwright.Locator do
     Frame.query_count(locator.frame, locator.selector)
   end
 
+  # TODO: describe/2 requires Playwright version > 1.49.1 (internal:describe engine not available)
+  # @spec describe(t(), binary()) :: t()
+  # def describe(%Locator{frame: frame, selector: selector}, description) when is_binary(description) do
+  #   new_selector = selector <> " >> internal:describe=" <> Jason.encode!(description)
+  #   %Locator{frame: frame, selector: new_selector}
+  # end
+
   @doc """
   Double clicks the element.
 

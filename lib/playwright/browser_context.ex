@@ -673,9 +673,33 @@ defmodule Playwright.BrowserContext do
     Channel.post(session, {:guid, context.guid}, :set_geolocation, %{geolocation: geolocation})
   end
 
-  # ???
-  # @spec set_http_credentials(t(), http_credentials()) :: :ok
-  # def set_http_credentials(context, http_credentials)
+  @doc """
+  Sets HTTP authentication credentials for requests.
+
+  Pass `nil` to disable authentication.
+
+  ## Arguments
+
+  | key/name      | type                                               | description                     |
+  | ------------- | -------------------------------------------------- | ------------------------------- |
+  | `credentials` | `%{username: binary(), password: binary()} \| nil` | Credentials or nil to disable.  |
+
+  ## Returns
+
+  - `:ok`
+
+  ## Example
+
+      BrowserContext.set_http_credentials(context, %{username: "user", password: "pass"})
+      # Later, to disable:
+      BrowserContext.set_http_credentials(context, nil)
+  """
+  @spec set_http_credentials(t(), %{username: binary(), password: binary()} | nil) :: :ok
+  def set_http_credentials(%BrowserContext{session: session, guid: guid}, credentials) do
+    params = %{httpCredentials: credentials}
+    Channel.post(session, {:guid, guid}, :set_http_credentials, params)
+    :ok
+  end
 
   # ---
 

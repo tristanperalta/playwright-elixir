@@ -280,7 +280,7 @@ This document tracks the implementation status of Playwright features in playwri
 | Method | Status | Notes |
 |--------|--------|-------|
 | `page()` | [x] | |
-| `describe(description)` | [ ] | |
+| `describe(description)` | [ ] | Requires Playwright > 1.49.1 |
 
 ---
 
@@ -319,7 +319,7 @@ This document tracks the implementation status of Playwright features in playwri
 | `setGeolocation(geolocation)` | [x] | |
 | `setExtraHTTPHeaders(headers)` | [x] | |
 | `setOffline(offline)` | [x] | |
-| `setHTTPCredentials(credentials)` | [ ] | |
+| `setHTTPCredentials(credentials)` | [x] | |
 | `setDefaultTimeout(timeout)` | [x] | |
 | `setDefaultNavigationTimeout(timeout)` | [x] | |
 

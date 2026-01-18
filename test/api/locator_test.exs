@@ -50,6 +50,8 @@ defmodule Playwright.LocatorTest do
     end
   end
 
+  # TODO: Locator.describe/2 requires Playwright > 1.49.1
+
   describe "Locator.and_/2" do
     test "matches elements that satisfy both locators", %{page: page} do
       Page.set_content(page, ~s|

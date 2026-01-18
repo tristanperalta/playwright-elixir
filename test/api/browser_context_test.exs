@@ -299,6 +299,15 @@ defmodule Playwright.BrowserContextTest do
     end
   end
 
+  describe "BrowserContext.set_http_credentials/2" do
+    test "sets and clears credentials", %{browser: browser} do
+      context = Browser.new_context(browser)
+      assert :ok = BrowserContext.set_http_credentials(context, %{username: "user", password: "pass"})
+      assert :ok = BrowserContext.set_http_credentials(context, nil)
+      BrowserContext.close(context)
+    end
+  end
+
   describe "User Agent" do
     test "can be set via new_context", %{browser: browser} do
       context = Browser.new_context(browser, %{"userAgent" => "Mozzies"})
