@@ -146,8 +146,8 @@ This document tracks the implementation status of Playwright features in playwri
 |--------|--------|-------|
 | `on(event, callback)` | [x] | With event validation |
 | `waitForEvent(event, options)` | [~] | As `expect_event` |
-| `consoleMessages()` | [ ] | |
-| `pageErrors()` | [ ] | |
+| `consoleMessages()` | [x] | `console_messages/1` - Requires Playwright > 1.49.1 |
+| `pageErrors()` | [x] | `page_errors/1` - Requires Playwright > 1.49.1 |
 
 ### Locator Handlers
 

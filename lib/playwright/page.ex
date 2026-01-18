@@ -408,6 +408,23 @@ defmodule Playwright.Page do
   end
 
   @doc """
+  Returns up to 200 last console messages from this page.
+
+  ## Returns
+
+  - `[map()]` - List of console message data
+
+  ## Example
+
+      Page.goto(page, "data:text/html,<script>console.log('hello');</script>")
+      messages = Page.console_messages(page)
+  """
+  @spec console_messages(t()) :: [map()]
+  def console_messages(%Page{session: session, guid: guid}) do
+    Channel.post(session, {:guid, guid}, :console_messages)
+  end
+
+  @doc """
   A shortcut for the main frame's `Playwright.Frame.dblclick/3`.
   """
   @spec dblclick(t(), binary(), options()) :: :ok
@@ -986,6 +1003,25 @@ defmodule Playwright.Page do
   end
 
   def opener(%Page{}), do: nil
+
+  @doc """
+  Returns up to 200 last page errors from this page.
+
+  Page errors are uncaught exceptions thrown in the page's JavaScript.
+
+  ## Returns
+
+  - `[map()]` - List of error data
+
+  ## Example
+
+      Page.goto(page, "data:text/html,<script>throw new Error('oops');</script>")
+      errors = Page.page_errors(page)
+  """
+  @spec page_errors(t()) :: [map()]
+  def page_errors(%Page{session: session, guid: guid}) do
+    Channel.post(session, {:guid, guid}, :page_errors)
+  end
 
   # @spec pause(t()) :: :ok
   # def pause(page)
