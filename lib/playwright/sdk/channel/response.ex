@@ -114,6 +114,10 @@ defmodule Playwright.SDK.Channel.Response do
     values
   end
 
+  defp parse([{:entries, entries}], _catalog) do
+    entries
+  end
+
   defp parse([], _catalog) do
     nil
   end

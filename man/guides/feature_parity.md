@@ -541,14 +541,14 @@ These modules exist but have no implemented methods (all commented out):
 | `page()` | [x] | |
 | `setFiles(files, options)` | [x] | `set_files/3` via `from_event/1` |
 
-### Coverage (`lib/playwright/page/coverage.ex`)
+### Coverage (`lib/playwright/coverage.ex`)
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `startJSCoverage(options)` | [ ] | |
-| `stopJSCoverage()` | [ ] | |
-| `startCSSCoverage(options)` | [ ] | |
-| `stopCSSCoverage()` | [ ] | |
+| `startJSCoverage(options)` | [x] | `start_js_coverage/2` |
+| `stopJSCoverage()` | [x] | `stop_js_coverage/1` |
+| `startCSSCoverage(options)` | [x] | `start_css_coverage/2` |
+| `stopCSSCoverage()` | [x] | `stop_css_coverage/1` |
 
 ### Tracing (`lib/playwright/tracing.ex`)
 
