@@ -168,8 +168,8 @@ This document tracks the implementation status of Playwright features in playwri
 | Method | Status | Notes |
 |--------|--------|-------|
 | `context()` | [x] | |
-| `pause()` | [ ] | Inspector |
-| `requestGC()` | [ ] | |
+| `pause()` | [x] | Opens Playwright Inspector |
+| `requestGC()` | [x] | `request_gc/1` |
 
 ---
 

@@ -1023,8 +1023,24 @@ defmodule Playwright.Page do
     Channel.post(session, {:guid, guid}, :page_errors)
   end
 
-  # @spec pause(t()) :: :ok
-  # def pause(page)
+  @doc """
+  Pauses script execution and opens the Playwright Inspector.
+
+  This is useful for debugging. The page will be paused until the user
+  resumes from the Inspector or closes it.
+
+  Note: This method is primarily useful in headed mode where the Inspector
+  window can be displayed.
+  """
+  @spec pause(t()) :: :ok | {:error, term()}
+  def pause(%Page{} = page) do
+    ctx = context(page)
+
+    case Channel.post(ctx.session, {:guid, ctx.guid}, :pause, %{}) do
+      {:error, _} = error -> error
+      _ -> :ok
+    end
+  end
 
   # ---
 
@@ -1182,6 +1198,19 @@ defmodule Playwright.Page do
 
     Channel.list(session, {:guid, fresh_page.owned_context.browser.guid}, "APIRequestContext")
     |> List.first()
+  end
+
+  @doc """
+  Requests garbage collection in the browser.
+
+  Useful for memory testing scenarios.
+  """
+  @spec request_gc(t()) :: :ok | {:error, term()}
+  def request_gc(%Page{session: session, guid: guid}) do
+    case Channel.post(session, {:guid, guid}, :requestGC, %{}) do
+      {:error, _} = error -> error
+      _ -> :ok
+    end
   end
 
   @spec route(t(), binary() | Regex.t(), function(), map()) :: t() | {:error, term()}
