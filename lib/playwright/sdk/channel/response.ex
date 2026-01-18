@@ -118,6 +118,14 @@ defmodule Playwright.SDK.Channel.Response do
     entries
   end
 
+  defp parse([{:messages, messages}], _catalog) do
+    messages
+  end
+
+  defp parse([{:errors, errors}], _catalog) do
+    errors
+  end
+
   defp parse([], _catalog) do
     nil
   end
