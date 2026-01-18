@@ -267,7 +267,7 @@ This document tracks the implementation status of Playwright features in playwri
 | `screenshot(options)` | [x] | |
 | `elementHandle(options)` | [x] | |
 | `elementHandles()` | [x] | |
-| `ariaSnapshot(options)` | [ ] | |
+| `ariaSnapshot(options)` | [x] | |
 
 ### Waiting
 

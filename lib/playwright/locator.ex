@@ -160,6 +160,30 @@ defmodule Playwright.Locator do
   # @spec and(Locator.t(), Locator.t()) :: Locator.t()
   # def and(locator, other)
 
+  @doc """
+  Captures the ARIA accessibility snapshot of the element.
+
+  Returns a string representation of the element's accessibility tree.
+
+  ## Options
+
+  | key/name   | type       | description                    |
+  | ---------- | ---------- | ------------------------------ |
+  | `:timeout` | `number()` | Timeout in milliseconds.       |
+
+  ## Returns
+
+  - `binary()` - ARIA snapshot string.
+
+  ## Example
+
+      snapshot = Locator.aria_snapshot(locator)
+  """
+  @spec aria_snapshot(t(), map()) :: binary()
+  def aria_snapshot(%Locator{frame: frame, selector: selector}, options \\ %{}) do
+    Frame.aria_snapshot(frame, selector, options)
+  end
+
   # @spec blur(Locator.t(), options()) :: :ok
   def blur(locator, options \\ %{}) do
     frame = locator.frame

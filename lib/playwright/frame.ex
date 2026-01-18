@@ -106,6 +106,26 @@ defmodule Playwright.Frame do
     Channel.post(session, {:guid, guid}, :add_style_tag, options)
   end
 
+  @doc """
+  Captures the ARIA accessibility snapshot of elements matching selector.
+
+  ## Arguments
+
+  | key/name   | type       | description                    |
+  | ---------- | ---------- | ------------------------------ |
+  | `selector` | `binary()` | Selector to query.             |
+  | `:timeout` | `number()` | Timeout in milliseconds.       |
+
+  ## Returns
+
+  - `binary()` - ARIA snapshot string.
+  """
+  @spec aria_snapshot(t(), binary(), map()) :: binary()
+  def aria_snapshot(%Frame{session: session, guid: guid}, selector, options \\ %{}) do
+    params = Map.merge(options, %{selector: selector})
+    Channel.post(session, {:guid, guid}, :aria_snapshot, params)
+  end
+
   # ---
 
   @spec check(t(), binary(), options()) :: :ok

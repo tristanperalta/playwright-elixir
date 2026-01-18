@@ -81,6 +81,10 @@ defmodule Playwright.SDK.Channel.Response do
     value
   end
 
+  defp parse([{:snapshot, value}], _catalog) do
+    value
+  end
+
   defp parse([{:traceName, value}], _catalog) do
     %{traceName: value}
   end

@@ -41,6 +41,15 @@ defmodule Playwright.LocatorTest do
     end
   end
 
+  describe "Locator.aria_snapshot/2" do
+    test "returns aria snapshot of element", %{page: page} do
+      Page.set_content(page, "<button>Click me</button>")
+      locator = Page.locator(page, "button")
+      snapshot = Locator.aria_snapshot(locator)
+      assert is_binary(snapshot)
+    end
+  end
+
   describe "Locator.and_/2" do
     test "matches elements that satisfy both locators", %{page: page} do
       Page.set_content(page, ~s|
