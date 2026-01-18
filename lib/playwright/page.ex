@@ -101,6 +101,11 @@ defmodule Playwright.Page do
       :ok
     end)
 
+    Channel.bind(session, {:guid, page.guid}, :locator_handler_triggered, fn %{params: %{uid: uid}} ->
+      Playwright.LocatorHandlers.trigger(page.guid, uid, session)
+      :ok
+    end)
+
     {:ok, %{page | bindings: %{}, routes: []}}
   end
 
@@ -168,8 +173,66 @@ defmodule Playwright.Page do
 
   # ---
 
-  # @spec add_locator_handler(t(), Locator.t(), (Locator.t() -> any()), options()) :: :ok
-  # def add_locator_handler(page, locator, func, options \\ %{})
+  @doc """
+  Registers a handler that will be called when specified element becomes visible.
+
+  This is useful for automatically dismissing dialogs, cookie banners, or other
+  overlay elements that may appear during page interactions.
+
+  The handler is called before any action that requires the element to be actionable.
+  After the handler returns, Playwright waits until the overlay element is either
+  hidden or detached (unless `no_wait_after: true` is specified).
+
+  ## Arguments
+
+  | key/name        | type          | description                                    |
+  | --------------- | ------------- | ---------------------------------------------- |
+  | `locator`       | `Locator.t()` | Locator that triggers the handler              |
+  | `handler`       | `function/1`  | Callback receiving the locator when triggered  |
+  | `:times`        | `integer()`   | Max times to run handler (default: unlimited)  |
+  | `:no_wait_after`| `boolean()`   | Don't wait for element to hide after handler   |
+
+  ## Returns
+
+  - `:ok`
+  - `{:error, term()}`
+
+  ## Example
+
+      dialog = Page.locator(page, "#cookie-dialog")
+      accept_btn = Page.locator(page, "#accept-cookies")
+
+      Page.add_locator_handler(page, dialog, fn _loc ->
+        Locator.click(accept_btn)
+      end)
+
+      # Now any action will auto-dismiss the cookie dialog if it appears
+      Page.click(page, "#some-button")
+  """
+  @spec add_locator_handler(t(), Playwright.Locator.t(), (Playwright.Locator.t() -> any()), map()) ::
+          :ok | {:error, term()}
+  def add_locator_handler(%Page{session: session, guid: guid}, %Playwright.Locator{} = locator, handler, options \\ %{})
+      when is_function(handler, 1) do
+    params = %{selector: locator.selector}
+    params = if options[:no_wait_after], do: Map.put(params, :noWaitAfter, true), else: params
+
+    case Channel.post(session, {:guid, guid}, :register_locator_handler, params) do
+      %{uid: uid} ->
+        Playwright.LocatorHandlers.store(guid, uid, %{
+          locator: locator,
+          selector: locator.selector,
+          handler: handler,
+          times: options[:times]
+        })
+
+        :ok
+
+      {:error, _} = error ->
+        error
+    end
+  end
+
+  # ---
 
   @doc """
   Adds a `<script>` tag into the page with the desired URL or content.
@@ -1033,8 +1096,40 @@ defmodule Playwright.Page do
 
   # ---
 
-  # @spec remove_locator_handler(t(), Locator.t()) :: :ok
-  # def remove_locator_handler(page, locator)
+  @doc """
+  Removes a previously registered locator handler.
+
+  Removes all handlers registered for the given locator (matched by selector).
+
+  ## Arguments
+
+  | key/name  | type          | description                  |
+  | --------- | ------------- | ---------------------------- |
+  | `locator` | `Locator.t()` | The locator to stop handling |
+
+  ## Returns
+
+  - `:ok`
+
+  ## Example
+
+      dialog = Page.locator(page, "#cookie-dialog")
+      Page.add_locator_handler(page, dialog, fn _loc -> ... end)
+
+      # Later, remove the handler
+      Page.remove_locator_handler(page, dialog)
+  """
+  @spec remove_locator_handler(t(), Playwright.Locator.t()) :: :ok
+  def remove_locator_handler(%Page{session: session, guid: guid}, %Playwright.Locator{} = locator) do
+    handlers = Playwright.LocatorHandlers.find_by_selector(guid, locator.selector)
+
+    for {uid, _data} <- handlers do
+      Playwright.LocatorHandlers.delete(guid, uid)
+      Channel.post(session, {:guid, guid}, :unregister_locator_handler, %{uid: uid})
+    end
+
+    :ok
+  end
 
   # ---
 

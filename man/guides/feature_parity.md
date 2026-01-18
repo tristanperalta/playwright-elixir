@@ -153,8 +153,8 @@ This document tracks the implementation status of Playwright features in playwri
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `addLocatorHandler(locator, handler, options)` | [ ] | For auto-dismiss dialogs |
-| `removeLocatorHandler(locator)` | [ ] | |
+| `addLocatorHandler(locator, handler, options)` | [x] | For auto-dismiss dialogs |
+| `removeLocatorHandler(locator)` | [x] | |
 
 ### Timeouts
 
@@ -599,9 +599,9 @@ These modules exist but have no implemented methods (all commented out):
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `delete()` | [ ] | |
-| `path()` | [ ] | |
-| `saveAs(path)` | [ ] | |
+| `delete()` | [x] | |
+| `path()` | [x] | |
+| `saveAs(path)` | [x] | |
 
 ---
 

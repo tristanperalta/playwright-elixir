@@ -114,6 +114,11 @@ defmodule Playwright.SDK.Channel.Response do
     values
   end
 
+  # Locator handler registration returns uid
+  defp parse([{:uid, uid}], _catalog) do
+    %{uid: uid}
+  end
+
   defp parse([], _catalog) do
     nil
   end
