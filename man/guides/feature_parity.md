@@ -198,7 +198,6 @@ This document tracks the implementation status of Playwright features in playwri
 | `getByTitle(text, options)` | [x] | |
 | `frameLocator(selector)` | [x] | |
 | `contentFrame()` | [x] | |
-| `owner()` | [ ] | |
 
 ### Actions
 
@@ -359,8 +358,8 @@ This document tracks the implementation status of Playwright features in playwri
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `backgroundPages()` | [ ] | |
-| `serviceWorkers()` | [ ] | |
+| `backgroundPages()` | [x] | Returns empty list (stub) |
+| `serviceWorkers()` | [x] | Returns empty list (stub) |
 
 ### CDP
 
@@ -385,7 +384,7 @@ This document tracks the implementation status of Playwright features in playwri
 | `browserType()` | [x] | |
 | `version` | [x] | Property |
 | `name` | [x] | Property |
-| `newBrowserCDPSession()` | [ ] | |
+| `newBrowserCDPSession()` | [x] | Chromium only |
 | `startTracing(page, options)` | [x] | Chromium only |
 | `stopTracing()` | [x] | Chromium only |
 

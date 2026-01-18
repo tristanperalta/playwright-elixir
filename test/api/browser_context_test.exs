@@ -326,6 +326,20 @@ defmodule Playwright.BrowserContextTest do
       Page.close(page)
     end
   end
+
+  describe "BrowserContext.background_pages/1" do
+    test "returns a list", %{page: page} do
+      context = Page.context(page)
+      assert [] = BrowserContext.background_pages(context)
+    end
+  end
+
+  describe "BrowserContext.service_workers/1" do
+    test "returns a list", %{page: page} do
+      context = Page.context(page)
+      assert is_list(BrowserContext.service_workers(context))
+    end
+  end
 end
 
 # test_expose_function_should_throw_for_duplicate_registrations

@@ -1,6 +1,6 @@
 defmodule Playwright.BrowserTest do
   use Playwright.TestCase, async: true
-  alias Playwright.{Browser, BrowserContext, BrowserType, Page}
+  alias Playwright.{Browser, BrowserContext, BrowserType, CDPSession, Page}
 
   describe "Browser.close/1" do
     @tag exclude: [:page]
@@ -69,6 +69,14 @@ defmodule Playwright.BrowserTest do
     test "returns the BrowserType that launched the browser", %{browser: browser} do
       browser_type = Browser.browser_type(browser)
       assert %BrowserType{} = browser_type
+    end
+  end
+
+  describe "Browser.new_browser_cdp_session/1" do
+    test "creates a CDP session at browser level", %{browser: browser} do
+      session = Browser.new_browser_cdp_session(browser)
+      assert %CDPSession{} = session
+      CDPSession.detach(session)
     end
   end
 end

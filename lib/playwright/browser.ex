@@ -21,7 +21,7 @@ defmodule Playwright.Browser do
     - `:version`
   """
   use Playwright.SDK.ChannelOwner
-  alias Playwright.{Browser, BrowserContext, BrowserType, Page}
+  alias Playwright.{Browser, BrowserContext, BrowserType, CDPSession, Page}
   alias Playwright.SDK.{Channel, ChannelOwner, Extra}
 
   @property :name
@@ -258,6 +258,26 @@ defmodule Playwright.Browser do
     File.rm(temp_path)
     Playwright.Artifact.delete(artifact)
     data
+  end
+
+  @doc """
+  Creates a new CDP session attached to the browser.
+
+  This is Chromium-specific.
+
+  ## Returns
+
+  - `CDPSession.t()`
+
+  ## Example
+
+      session = Browser.new_browser_cdp_session(browser)
+      # Use CDP commands...
+      CDPSession.detach(session)
+  """
+  @spec new_browser_cdp_session(t()) :: CDPSession.t()
+  def new_browser_cdp_session(%Browser{session: session, guid: guid}) do
+    Channel.post(session, {:guid, guid}, "newBrowserCDPSession")
   end
 
   # @spec version(BrowserContext.t()) :: binary

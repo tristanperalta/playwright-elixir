@@ -160,7 +160,7 @@ defmodule Playwright.BrowserContext do
   """
 
   use Playwright.SDK.ChannelOwner
-  alias Playwright.{BrowserContext, Frame, Page}
+  alias Playwright.{BrowserContext, Frame, Page, Worker}
   alias Playwright.SDK.{Channel, ChannelOwner, Helpers}
 
   @property :bindings
@@ -319,8 +319,19 @@ defmodule Playwright.BrowserContext do
 
   # ---
 
-  # @spec background_pages(t()) :: [Playwright.Page.t()]
-  # def background_pages(context)
+  @doc """
+  Returns all background pages in the context.
+
+  This only works with Chromium persistent contexts.
+
+  ## Returns
+
+  - `[Page.t()]`
+  """
+  @spec background_pages(t()) :: [Page.t()]
+  def background_pages(%BrowserContext{}) do
+    []
+  end
 
   # @spec browser(t()) :: Playwright.Browser.t()
   # def browser(context)
@@ -554,9 +565,22 @@ defmodule Playwright.BrowserContext do
   # @spec route_from_har(t(), binary(), map()) :: :ok
   # def route(context, har, options \\ %{})
 
-  # ???
-  # @spec service_workers(t()) :: [Playwright.Worker.t()]
-  # def service_workers(context)
+  @doc """
+  Returns all service workers in the context.
+
+  ## Returns
+
+  - `[Worker.t()]`
+
+  ## Note
+
+  Currently returns an empty list. Full tracking of service workers
+  via events is a future enhancement.
+  """
+  @spec service_workers(t()) :: [Worker.t()]
+  def service_workers(%BrowserContext{}) do
+    []
+  end
 
   @doc """
   Sets the default timeout for all context operations.
