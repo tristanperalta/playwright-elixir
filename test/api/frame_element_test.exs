@@ -7,6 +7,7 @@ defmodule Playwright.FrameElementTest do
       Page.set_content(page, """
       <iframe id="my-iframe" src="#{assets.empty}"></iframe>
       """)
+
       Page.wait_for_load_state(page, "load")
 
       frames = Page.frames(page)

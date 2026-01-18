@@ -584,17 +584,17 @@ These modules exist but have no implemented methods (all commented out):
 
 ## Missing Modules (Not Yet Created)
 
-### Clock
+### Clock (`lib/playwright/clock.ex`)
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `install(options)` | [ ] | |
-| `fastForward(ticks)` | [ ] | |
-| `pauseAt(time)` | [ ] | |
-| `resume()` | [ ] | |
-| `runFor(ticks)` | [ ] | |
-| `setFixedTime(time)` | [ ] | |
-| `setSystemTime(time)` | [ ] | |
+| `install(options)` | [x] | |
+| `fastForward(ticks)` | [x] | As `fast_forward` |
+| `pauseAt(time)` | [x] | As `pause_at` |
+| `resume()` | [x] | |
+| `runFor(ticks)` | [x] | As `run_for` |
+| `setFixedTime(time)` | [x] | As `set_fixed_time` |
+| `setSystemTime(time)` | [x] | As `set_system_time` |
 
 ### Video
 
