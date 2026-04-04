@@ -75,9 +75,9 @@ This roadmap tracks the upgrade of playwright-elixir from Playwright 1.49.1 to 1
 
 - [x] `Frame.click`/`dblclick`/`dragAndDrop` `steps: int` option (1.54) — documented, already passes through
 - [x] `ElementHandle.click` `steps: int` option (1.54) — documented, already passes through
-- [ ] `Frame.expect` `selector` now optional (1.57)
-- [ ] Worker console event support — Worker now extends EventTarget (1.59)
-- [ ] `BrowserContext.storageState` `indexedDB` option (1.57)
+- [ ] `Frame.expect` `selector` now optional (1.57) — deferred, expect not implemented
+- [x] Worker console event support — added `on/3`, `url` property, `init/2` with close binding
+- [x] `BrowserContext.storageState` `indexedDB` option (1.57)
 
 ### Deferred (larger effort)
 

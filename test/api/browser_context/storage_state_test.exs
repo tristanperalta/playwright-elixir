@@ -92,4 +92,14 @@ defmodule Playwright.BrowserContext.StorageStateTest do
       File.rm!(path)
     end
   end
+
+  describe "storageState with indexedDB" do
+    @tag exclude: [:page]
+    test "accepts indexed_db option", %{browser: browser} do
+      context = Playwright.Browser.new_context(browser)
+      state = BrowserContext.storage_state(context, indexed_db: true)
+      assert is_map(state)
+      BrowserContext.close(context)
+    end
+  end
 end

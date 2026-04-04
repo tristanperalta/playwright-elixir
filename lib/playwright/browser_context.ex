@@ -786,7 +786,13 @@ defmodule Playwright.BrowserContext do
   """
   @spec storage_state(t(), keyword()) :: map() | {:error, term()}
   def storage_state(%BrowserContext{session: session} = context, options \\ []) do
-    case Channel.post(session, {:guid, context.guid}, :storage_state) do
+    params =
+      case Keyword.get(options, :indexed_db) do
+        nil -> %{}
+        val -> %{indexedDB: val}
+      end
+
+    case Channel.post(session, {:guid, context.guid}, :storage_state, params) do
       {:error, _} = error ->
         error
 
