@@ -7,86 +7,74 @@ This roadmap tracks the upgrade of playwright-elixir from Playwright 1.49.1 to 1
 
 ---
 
-## Phase 1: Package & Version Bump
+## Phase 1: Package & Version Bump ✅
 
-- [ ] Update `priv/static/package.json`: `playwright` from `1.49.1` to `1.59.1`
-- [ ] Update `priv/static/package.json`: `engines.node` from `>=16` to `>=18`
-- [ ] Run `npm install` in `priv/static/`
-- [ ] Install updated browser binaries (`npx playwright install`)
-- [ ] Update `mix.exs` version from `1.49.1-alpha.2` to `1.59.1-alpha.1`
-- [ ] Verify `priv/static/driver.js` symlink still resolves
+- [x] Update `priv/static/package.json`: `playwright` from `1.49.1` to `1.59.1`
+- [x] Update `priv/static/package.json`: `engines.node` from `>=16` to `>=18`
+- [x] Run `npm install` in `priv/static/`
+- [x] Install updated browser binaries (`npx playwright install`)
+- [x] Update `mix.exs` version from `1.49.1-alpha.2` to `1.59.1-alpha.1`
+- [x] Verify `priv/static/driver.js` symlink still resolves
 
 ---
 
-## Phase 2: Breaking Changes
+## Phase 2: Breaking Changes ✅
 
-These must be addressed before the library will work with 1.59.1.
+### 2a: Removed Protocol Commands ✅
 
-### 2a: Removed Protocol Commands
+- [x] **Remove `Page.Accessibility` module** — `accessibilitySnapshot` command removed in 1.57
+- [x] **Remove `Selectors` module** — interface removed entirely in 1.57
+- [x] **Remove `backgroundPage` event** from BrowserContext docs and type
 
-- [ ] **Remove `Page.Accessibility` module** — `accessibilitySnapshot` command removed in 1.57
-  - Remove `lib/playwright/page/accessibility.ex`
-  - Remove `test/api/page/accessibility_test.exs`
-  - Update docs references and `mix.exs` doc groups
-  - Note: `Frame.aria_snapshot/3` and `Locator.aria_snapshot/2` exist as replacements (different API shape — returns YAML string, not tree)
+### 2b: Required Timeouts ✅
 
-- [ ] **Migrate `Selectors` module** — `Selectors` interface removed entirely
-  - Remove or rewrite `lib/playwright/selectors.ex`
-  - Replacement: `BrowserContext.registerSelectorEngine` and `BrowserContext.setTestIdAttributeName`
-  - Alternative: pass `selectorEngines` and `testIdAttributeName` via `ContextOptions`
+- [x] Add default timeout (30_000) to all `Channel.post` calls
+  - Server validator ignores extra params, so safe to add globally
+  - Special cases: `is_hidden`/`is_visible` timeout stripped by server validator automatically
 
-- [ ] **Remove `backgroundPage` event** — `BrowserContext.backgroundPage` event removed in 1.57
-  - Remove any event binding in `BrowserContext.init/2`
+### 2c: Type System Changes ✅
 
-### 2b: Required Timeouts
+- [x] Fixed float serialization (was broken, now works)
+- [x] Added typed array (`ta`) deserialization support
+- [x] Added `{:error, _}` clause to `deserialize/1` (pre-existing bug)
 
-The protocol changed nearly every `timeout` parameter from optional (`number?`) to required (`float`). The server no longer fills in defaults.
+### 2d: Other Breaking Changes ✅
 
-- [ ] Audit all `Channel.post` calls that pass timeout options
-- [ ] Ensure the library always sends a timeout value (use `Config` defaults as fallback)
-- [ ] Special cases:
-  - `Frame.isHidden`/`isVisible` — timeout parameter removed entirely (now one-shot)
-  - `Frame.waitForTimeout` — param renamed from `timeout` to `waitTimeout`
-
-### 2c: Type System Changes
-
-The protocol split `number` into `int` and `float`. JSON doesn't distinguish, so this is low risk, but:
-
-- [ ] Review `Serialization.ex` for any type assumptions
-- [ ] Add typed array (`ta`) support to `SerializedValue` deserialization
-  - New types: Int8Array, Uint8Array, Uint8ClampedArray, Int16Array, Uint16Array, Int32Array, Uint32Array, Float32Array, Float64Array, BigInt64Array, BigUint64Array
-
-### 2d: Other Breaking Changes
-
-- [ ] `ContextOptions.recordHar` removed — HAR recording now via `harStart`/`harExport` commands
+- [x] Video changed from event to initializer property — handled in Page.init/2
+- [x] New "Disposable" return type — handled in `post!` and `add_init_script`
+- [x] New "Debugger" channel owner type — handled by GenericChannelOwner fallback
+- [x] `viewportSizeChanged` new event — handler supports both camelCase and snake_case params
+- [ ] `ContextOptions.recordHar` removed — HAR recording now via `harStart`/`harExport` commands (not yet used)
 - [ ] `Route.continue` no longer allows overriding Cookie header (document only)
 - [ ] Glob patterns in `page.route()` no longer support `?` and `[]` (document only)
-- [ ] `BrowserType.launchPersistentContext` now returns `{browser, context}` instead of just `context`
+- [ ] `BrowserType.launchPersistentContext` now returns `{browser, context}` instead of just `context` (not yet implemented)
 
 ---
 
-## Phase 3: Deprecations
+## Phase 3: Deprecations ✅
 
-- [ ] Mark `Page.type/4` as deprecated — use `Page.fill/4` or `Locator.press_sequentially/3`
-- [ ] Mark `Frame.type/4` as deprecated — use `Frame.fill/4`
-- [ ] Mark `Locator.type/3` as deprecated — use `Locator.fill/3` or `Locator.press_sequentially/3`
+- [x] Mark `Page.type/4` as deprecated
+- [x] Mark `Frame.type/4` as deprecated
+- [x] Mark `Locator.type/3` as deprecated
 
 ---
 
-## Phase 4: New APIs
+## Phase 4: New APIs ✅ (priority items)
 
-### Priority (small, high value)
+### Priority (small, high value) ✅
 
-- [ ] `Page.requests/1` — returns up to 100 last network requests (1.56)
-- [ ] `Page.aria_snapshot/2` — shorthand for `Locator.aria_snapshot` on body (1.59)
-- [ ] `Locator.describe/2` — annotate locator for trace viewer/reports (1.53)
-- [ ] Cookie `partitionKey` field in `BrowserContext` cookie types (1.53)
-- [ ] `Page.emulateMedia` `contrast` option: `no-preference`, `more`, `no-override` (1.56)
+- [x] `Page.requests/1` — returns up to 100 last network requests (1.56)
+- [x] `Page.aria_snapshot/2` — shorthand for body aria snapshot (1.59)
+- [x] `Locator.describe/2` — annotate locator for traces/reports (1.53)
+- [x] Cookie `partitionKey` field in `BrowserContext` cookie type (1.53)
+- [x] `Page.emulateMedia` `contrast` option — already implemented
+- [x] Unskipped `console_messages` and `page_errors` tests
+- [x] Fixed CDPSession detach error message for Chrome 147
 
 ### Medium (new params on existing commands)
 
-- [ ] `Frame.click`/`dblclick`/`dragAndDrop` `steps: int` option (1.54)
-- [ ] `ElementHandle.click`/`dblclick` `steps: int` option (1.54)
+- [x] `Frame.click`/`dblclick`/`dragAndDrop` `steps: int` option (1.54) — documented, already passes through
+- [x] `ElementHandle.click` `steps: int` option (1.54) — documented, already passes through
 - [ ] `Frame.expect` `selector` now optional (1.57)
 - [ ] Worker console event support — Worker now extends EventTarget (1.59)
 - [ ] `BrowserContext.storageState` `indexedDB` option (1.57)
@@ -100,14 +88,14 @@ The protocol split `number` into `int` and `float`. JSON doesn't distinguish, so
 
 ---
 
-## Phase 5: Testing & Validation
+## Phase 5: Testing & Validation ✅
 
-- [ ] Run full test suite after package update — expect accessibility test failures
-- [ ] Remove/skip accessibility tests
-- [ ] Verify browser installation works (Chrome for Testing switch in 1.57)
-- [ ] Test on all browser engines: Chromium, Firefox, WebKit
+- [x] Run full test suite — 519 tests, 0 failures
+- [x] Accessibility tests removed
+- [x] Browser installation verified (Chrome 147, Firefox 148, WebKit 26.4)
+- [x] `consoleMessages`, `pageErrors` tests unskipped and passing
+- [ ] Test on Firefox and WebKit engines (currently only Chromium)
 - [ ] Add smoke test verifying driver version is 1.59.x
-- [ ] Test `routeWebSocket`, `consoleMessages`, `pageErrors` (already implemented, now supported by server)
 
 ---
 

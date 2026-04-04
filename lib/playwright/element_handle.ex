@@ -138,6 +138,10 @@ defmodule Playwright.ElementHandle do
   When all steps combined have not finished during the specified `:timeout`,
   this function raises a `TimeoutError`. Passing zero (`0`) for timeout
   disables this.
+
+  ## Options
+
+    - `:steps` - Number of intermediate mouse move events. `(default: 1)`
   """
   @spec click(t(), options()) :: :ok
   def click(%ElementHandle{session: session} = handle, options \\ %{}) do

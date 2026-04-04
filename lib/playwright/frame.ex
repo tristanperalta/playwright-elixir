@@ -176,6 +176,10 @@ defmodule Playwright.Frame do
   When all steps combined have not finished during the specified
   `option: timeout`, `/click/3` raises a `TimeoutError`. Passing zero for
   `option: timeout` disables this.
+
+  ## Options
+
+    - `:steps` - Number of intermediate mouse move events. `(default: 1)`
   """
   @spec click(t(), binary(), options()) :: :ok
   def click(owner, selector, options \\ %{})
@@ -257,6 +261,7 @@ defmodule Playwright.Frame do
   | `:position`      | option | `%{x: x, y: y}`                   | A point to use relative to the top-left corner of element padding box. If not specified, uses some visible point of the element. |
   | `:strict`        | option | `boolean()`                       | When true, the call requires selector to resolve to a single element. If given selector resolves to more then one element, the call throws an exception. |
   | `:timeout`       | option | `number()`                        | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
+  | `:steps`         | option | `number()`                        | Number of intermediate mouse move events. `(default: 1)` |
   | `:trial`         | option | `boolean()`                       | When set, this call only performs the actionability checks and skips the action. Useful to wait until the element is ready for the action without performing it. `(default: false)` |
   """
   @spec dblclick(Frame.t(), binary(), options()) :: :ok
