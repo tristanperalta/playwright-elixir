@@ -149,9 +149,9 @@ This document tracks the implementation status of Playwright features in playwri
 | `waitForEvent(event, options)` | [~] | As `expect_event` |
 | `consoleMessages()` | [x] | `console_messages/1` |
 | `pageErrors()` | [x] | `page_errors/1` |
-| `requests()` | [ ] | [!] New in 1.56, returns last 100 requests |
-| `ariaSnapshot()` | [ ] | [!] New in 1.59, shorthand for body aria snapshot |
-| `screencast()` | [ ] | New in 1.50, video recording with start/stop control |
+| `requests()` | [x] | `requests/1` — New in 1.56 |
+| `ariaSnapshot()` | [x] | `aria_snapshot/2` — New in 1.59 |
+| `screencast()` | [ ] | Deferred — new Screencast ChannelOwner (1.50) |
 
 ### Locator Handlers
 
@@ -283,7 +283,7 @@ This document tracks the implementation status of Playwright features in playwri
 | Method | Status | Notes |
 |--------|--------|-------|
 | `page()` | [x] | |
-| `describe(description)` | [ ] | [!] New in 1.53 |
+| `describe(description)` | [x] | New in 1.53 |
 
 ---
 
@@ -362,7 +362,7 @@ This document tracks the implementation status of Playwright features in playwri
 
 | Method | Status | Notes |
 |--------|--------|-------|
-| `backgroundPages()` | [x] | Returns empty list (stub) |
+| `backgroundPages()` | [x] | Deprecated in 1.57, returns empty list |
 | `serviceWorkers()` | [x] | Returns empty list (stub) |
 
 ### CDP
@@ -450,7 +450,7 @@ This document tracks the implementation status of Playwright features in playwri
 | `dblclick(selector, options)` | [x] | |
 | `tap(selector, options)` | [x] | |
 | `fill(selector, value, options)` | [x] | |
-| `type(selector, text, options)` | [x] | |
+| `type(selector, text, options)` | [x] | Deprecated in 1.50 |
 | `press(selector, key, options)` | [x] | |
 | `hover(selector, options)` | [x] | |
 | `focus(selector, options)` | [x] | |
@@ -458,7 +458,7 @@ This document tracks the implementation status of Playwright features in playwri
 | `uncheck(selector, options)` | [x] | |
 | `selectOption(selector, values, options)` | [x] | |
 | `setInputFiles(selector, files, options)` | [x] | |
-| `dragAndDrop(source, target, options)` | [x] | |
+| `dragAndDrop(source, target, options)` | [x] | `steps` option added in 1.54 |
 | `dispatchEvent(selector, type, eventInit, options)` | [x] | |
 
 ### Query Methods
@@ -491,9 +491,7 @@ This document tracks the implementation status of Playwright features in playwri
 
 ---
 
-## Completely Stubbed/Empty Modules
-
-These modules exist but have no implemented methods (all commented out):
+## Additional Modules
 
 ### Mouse (`lib/playwright/page/mouse.ex`)
 
@@ -585,8 +583,6 @@ These modules exist but have no implemented methods (all commented out):
 
 ---
 
-## Missing Modules (Not Yet Created)
-
 ### Clock (`lib/playwright/clock.ex`)
 
 | Method | Status | Notes |
@@ -615,43 +611,43 @@ These modules exist but have no implemented methods (all commented out):
 
 Phases 1-4 are complete: core navigation, modern locators, session/state, and advanced features (Mouse, FrameLocator, PDF, Tracing, FileChooser, query methods).
 
-### Phase 5: Completeness (in progress)
+### Phase 5: Completeness ✅
 1. ~~Remaining Page query methods~~ DONE
 2. ~~`FileChooser` module~~ DONE
-3. `Clock` module
-4. `Video` module
+3. ~~`Clock` module~~ DONE
+4. ~~`Video` module~~ DONE
 
-### Phase 6: Upgrade to Playwright 1.59.1
+### Phase 6: Upgrade to Playwright 1.59.1 ✅
 
-#### 6a: Breaking Changes (must fix)
-1. Update `priv/static/package.json` to `playwright@1.59.1`, fix `engines.node` to `>=18`
-2. Update `mix.exs` version to `1.59.1-alpha.1`
-3. Run `npm install` in `priv/static/` and install new browser binaries
-4. Remove `Page.Accessibility` module — `accessibilitySnapshot` protocol command removed in 1.57
-5. Remove/migrate `Selectors` module — interface removed, replaced by `BrowserContext.registerSelectorEngine`
-6. Handle required timeouts — all `timeout` params changed from optional to required in protocol
-7. Rename `Frame.waitForTimeout` param from `timeout` to `waitTimeout`
-8. Remove `BrowserContext.backgroundPage` event binding (event removed)
-9. Handle `ContextOptions.recordHar` removal (now via `harStart`/`harExport`)
-10. Update `Serialization.ex` to support typed arrays (`SerializedValue.ta`)
+#### 6a: Breaking Changes ✅
+1. ~~Package bump to 1.59.1, node >=18~~ DONE
+2. ~~Remove `Page.Accessibility` module~~ DONE
+3. ~~Remove `Selectors` module~~ DONE
+4. ~~Handle required timeouts~~ DONE
+5. ~~Remove `backgroundPage` event~~ DONE
+6. ~~Add typed array serialization support~~ DONE
+7. ~~Fix deserialize error handling~~ DONE
+8. ~~Handle video as initializer property~~ DONE
+9. ~~Handle Disposable/Debugger ChannelOwner types~~ DONE
 
-#### 6b: Deprecations
-1. Mark `Page.type/4`, `Frame.type/4`, `Locator.type/3` as deprecated (since 1.50)
+#### 6b: Deprecations ✅
+1. ~~Mark `Page.type/4`, `Frame.type/4`, `Locator.type/3` as deprecated~~ DONE
 
-#### 6c: New APIs
-1. `Page.requests/1` — returns last 100 network requests (1.56)
-2. `Page.aria_snapshot/2` — shorthand for body aria snapshot (1.59)
-3. `Locator.describe/2` — annotate locator for traces/reports (1.53)
-4. `Frame.click`/`dblclick`/`dragAndDrop` `steps` option (1.54)
-5. Cookie `partitionKey` support in `BrowserContext` (1.53)
-6. `Page.emulateMedia` `contrast` option (1.56)
-7. Worker console event support (1.59)
-8. `BrowserType.launchPersistentContext` now also returns `browser` (1.57)
+#### 6c: New APIs ✅
+1. ~~`Page.requests/1`~~ DONE
+2. ~~`Page.aria_snapshot/2`~~ DONE
+3. ~~`Locator.describe/2`~~ DONE
+4. ~~`Frame.click`/`dblclick`/`dragAndDrop` `steps` option~~ DONE
+5. ~~Cookie `partitionKey` support~~ DONE
+6. ~~`Page.emulateMedia` `contrast` option~~ DONE (already implemented)
+7. ~~Worker `on/3` and `url` property~~ DONE
+8. ~~`BrowserContext.storageState` `indexedDB` option~~ DONE
 
-#### 6d: Optional / Deferred
+#### 6d: Remaining / Deferred
 1. `Page.screencast/1` — new Screencast ChannelOwner module (1.50)
-2. IndexedDB support in `storageState` (1.57)
-3. `Page.snapshotForAI` (internal, for MCP integrations)
+2. `Page.snapshotForAI` (internal, for MCP integrations)
+3. `routeFromHAR` — requires LocalUtils
+4. `BrowserType.launchPersistentContext` returning browser (not yet implemented)
 
 ---
 
