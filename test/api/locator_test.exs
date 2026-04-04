@@ -1043,4 +1043,13 @@ defmodule Playwright.LocatorTest do
       assert result.guid == page.guid
     end
   end
+
+  describe "Locator.describe/2" do
+    test "returns a new locator with description", %{page: page} do
+      locator = Locator.new(page, "div")
+      described = Locator.describe(locator, "main content")
+      assert %Locator{} = described
+      assert described.selector =~ "internal:describe="
+    end
+  end
 end

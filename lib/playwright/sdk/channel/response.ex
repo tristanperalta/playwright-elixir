@@ -131,6 +131,10 @@ defmodule Playwright.SDK.Channel.Response do
     errors
   end
 
+  defp parse([{:requests, requests}], catalog) do
+    Enum.map(requests, fn %{guid: guid} -> Channel.Catalog.get(catalog, guid) end)
+  end
+
   defp parse([], _catalog) do
     nil
   end

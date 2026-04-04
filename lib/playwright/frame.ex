@@ -1139,6 +1139,7 @@ defmodule Playwright.Frame do
     Channel.post(session, {:guid, frame.guid}, :title)
   end
 
+  @doc deprecated: "Use Frame.fill/3 instead"
   @spec type(Frame.t(), binary(), binary(), options()) :: :ok
   def type(%Frame{session: session} = frame, selector, text, options \\ %{}) do
     params = Map.merge(%{selector: selector, text: text}, options)

@@ -131,6 +131,20 @@ defmodule Playwright.Page do
   # ---------------------------------------------------------------------------
 
   @doc """
+  Captures the ARIA accessibility snapshot of the page body.
+
+  Returns a YAML string representation of the page's accessibility tree.
+
+  ## Returns
+
+    - `binary()`
+  """
+  @spec aria_snapshot(t(), map()) :: binary()
+  def aria_snapshot(%Page{} = page, options \\ %{}) do
+    main_frame(page) |> Frame.aria_snapshot("body", options)
+  end
+
+  @doc """
   Adds a script to be evaluated before other scripts.
 
   The script is evaluated in the following scenarios:
@@ -360,6 +374,7 @@ defmodule Playwright.Page do
     - `:no_wait_after` - Do not wait for navigation after typing.
     - `:timeout` - Maximum time in milliseconds.
   """
+  @doc deprecated: "Use Page.fill/3 or Locator.press_sequentially/3 instead"
   @spec type(t(), binary(), binary(), options()) :: :ok
   def type(%Page{} = page, selector, text, options \\ %{}) do
     main_frame(page) |> Frame.type(selector, text, options)
@@ -1081,6 +1096,18 @@ defmodule Playwright.Page do
   @spec page_errors(t()) :: [map()]
   def page_errors(%Page{session: session, guid: guid}) do
     Channel.post(session, {:guid, guid}, :page_errors)
+  end
+
+  @doc """
+  Returns up to 100 last network requests from this page.
+
+  ## Returns
+
+    - `[Playwright.Request.t()]`
+  """
+  @spec requests(t()) :: [Playwright.Request.t()]
+  def requests(%Page{session: session, guid: guid}) do
+    Channel.post(session, {:guid, guid}, :requests)
   end
 
   @doc """

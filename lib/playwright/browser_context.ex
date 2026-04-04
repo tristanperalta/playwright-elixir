@@ -169,7 +169,8 @@ defmodule Playwright.BrowserContext do
           expires: float,
           httpOnly: boolean,
           secure: boolean,
-          sameSite: String.t()
+          sameSite: String.t(),
+          partitionKey: String.t()
         }
 
   @typedoc "Supported events"

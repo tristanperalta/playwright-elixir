@@ -683,10 +683,7 @@ defmodule Playwright.PageTest do
   end
 
   describe "Page.console_messages/1" do
-    @tag :skip
-    @tag :requires_playwright_upgrade
     test "returns collected console messages", %{page: page} do
-      # Requires Playwright > 1.49.1
       Page.goto(page, "data:text/html,<script>console.log('test message');</script>")
       messages = Page.console_messages(page)
       assert is_list(messages)
@@ -694,13 +691,27 @@ defmodule Playwright.PageTest do
   end
 
   describe "Page.page_errors/1" do
-    @tag :skip
-    @tag :requires_playwright_upgrade
     test "returns collected page errors", %{page: page} do
-      # Requires Playwright > 1.49.1
       Page.goto(page, "data:text/html,<script>throw new Error('test error');</script>")
       errors = Page.page_errors(page)
       assert is_list(errors)
+    end
+  end
+
+  describe "Page.requests/1" do
+    test "returns recent network requests", %{page: page, assets: assets} do
+      Page.goto(page, assets.dom)
+      requests = Page.requests(page)
+      assert is_list(requests)
+      assert requests != []
+    end
+  end
+
+  describe "Page.aria_snapshot/2" do
+    test "returns aria snapshot of page", %{page: page, assets: assets} do
+      Page.goto(page, assets.dom)
+      snapshot = Page.aria_snapshot(page)
+      assert is_binary(snapshot)
     end
   end
 end

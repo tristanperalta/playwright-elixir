@@ -343,12 +343,20 @@ defmodule Playwright.Locator do
     Frame.query_count(locator.frame, locator.selector)
   end
 
-  # TODO: describe/2 requires Playwright version > 1.49.1 (internal:describe engine not available)
-  # @spec describe(t(), binary()) :: t()
-  # def describe(%Locator{frame: frame, selector: selector}, description) when is_binary(description) do
-  #   new_selector = selector <> " >> internal:describe=" <> Jason.encode!(description)
-  #   %Locator{frame: frame, selector: new_selector}
-  # end
+  @doc """
+  Returns a new locator with a user-facing description attached.
+
+  The description is visible in traces and error messages.
+
+  ## Returns
+
+    - `Locator.t()`
+  """
+  @spec describe(t(), binary()) :: t()
+  def describe(%Locator{frame: frame, selector: selector}, description) when is_binary(description) do
+    new_selector = selector <> " >> internal:describe=" <> Jason.encode!(description)
+    %Locator{frame: frame, selector: new_selector}
+  end
 
   @doc """
   Double clicks the element.
@@ -1625,6 +1633,7 @@ defmodule Playwright.Locator do
   | `:no_wait_after` | option | `boolean()` | Actions that initiate navigations are waiting for these navigations to happen and for pages to start loading. You can opt out of waiting via setting this flag. You would only need this option in the exceptional cases such as navigating to inaccessible pages. `(default: false)` |
   | `:timeout`       | option | `number()`  | Maximum time in milliseconds. Pass `0` to disable timeout. The default value can be changed via BrowserContext or Page timeout settings. `(default: 30 seconds)` |
   """
+  @doc deprecated: "Use Locator.fill/2 or Locator.press_sequentially/3 instead"
   @spec type(t(), binary(), options_keyboard()) :: :ok
   def type(%Locator{} = locator, text, options \\ %{}) do
     options = Map.merge(options, %{strict: true})
