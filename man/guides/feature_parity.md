@@ -2,6 +2,7 @@
 
 This document tracks the implementation status of Playwright features in playwright-elixir compared to the official TypeScript client.
 
+**Current Target:** Playwright 1.59.1 (upgrading from 1.49.1)
 **Reference:** `/home/tristan/sources/playwright/packages/playwright-core/src/client/`
 
 **Legend:**
@@ -77,7 +78,7 @@ This document tracks the implementation status of Playwright features in playwri
 | `dblclick(selector, options)` | [x] | |
 | `tap(selector, options)` | [x] | |
 | `fill(selector, value, options)` | [x] | |
-| `type(selector, text, options)` | [x] | Deprecated, use fill |
+| `type(selector, text, options)` | [x] | Deprecated in 1.50, use fill/pressSequentially |
 | `press(selector, key, options)` | [x] | |
 | `hover(selector, options)` | [x] | |
 | `focus(selector, options)` | [x] | |
@@ -138,7 +139,7 @@ This document tracks the implementation status of Playwright features in playwri
 | `screenshot(options)` | [x] | |
 | `pdf(options)` | [x] | Chromium only |
 | `video()` | [x] | |
-| `emulateMedia(options)` | [x] | |
+| `emulateMedia(options)` | [x] | New `contrast` option in 1.56 |
 
 ### Events
 
@@ -146,8 +147,11 @@ This document tracks the implementation status of Playwright features in playwri
 |--------|--------|-------|
 | `on(event, callback)` | [x] | With event validation |
 | `waitForEvent(event, options)` | [~] | As `expect_event` |
-| `consoleMessages()` | [x] | `console_messages/1` - Requires Playwright > 1.49.1 |
-| `pageErrors()` | [x] | `page_errors/1` - Requires Playwright > 1.49.1 |
+| `consoleMessages()` | [x] | `console_messages/1` |
+| `pageErrors()` | [x] | `page_errors/1` |
+| `requests()` | [ ] | [!] New in 1.56, returns last 100 requests |
+| `ariaSnapshot()` | [ ] | [!] New in 1.59, shorthand for body aria snapshot |
+| `screencast()` | [ ] | New in 1.50, video recording with start/stop control |
 
 ### Locator Handlers
 
@@ -208,7 +212,7 @@ This document tracks the implementation status of Playwright features in playwri
 | `tap(options)` | [x] | |
 | `fill(value, options)` | [x] | |
 | `clear(options)` | [x] | |
-| `type(text, options)` | [x] | Deprecated |
+| `type(text, options)` | [x] | Deprecated in 1.50, use fill/pressSequentially |
 | `pressSequentially(text, options)` | [x] | As `press_sequentially` |
 | `press(key, options)` | [x] | |
 | `hover(options)` | [x] | |
@@ -279,7 +283,7 @@ This document tracks the implementation status of Playwright features in playwri
 | Method | Status | Notes |
 |--------|--------|-------|
 | `page()` | [x] | |
-| `describe(description)` | [ ] | Requires Playwright > 1.49.1 |
+| `describe(description)` | [ ] | [!] New in 1.53 |
 
 ---
 
@@ -607,34 +611,47 @@ These modules exist but have no implemented methods (all commented out):
 
 ## Priority Implementation Roadmap
 
-### Phase 1: Core Navigation & Waiting (High Impact)
-1. ~~`Page.goBack()` / `Page.goForward()`~~ DONE
-2. ~~`Page.waitForNavigation()`~~ DONE
-3. ~~`Page.waitForURL()`~~ DONE
-4. ~~`Dialog.accept()` / `Dialog.dismiss()`~~ DONE
+### Completed Phases (1.49.1)
 
-### Phase 2: Modern Locators (Developer Experience)
-1. ~~`*.getByRole()`~~ DONE
-2. ~~`*.getByTestId()`~~ DONE
-3. ~~`*.getByLabel()`~~ DONE
-4. ~~`Locator.filter()`~~ DONE
+Phases 1-4 are complete: core navigation, modern locators, session/state, and advanced features (Mouse, FrameLocator, PDF, Tracing, FileChooser, query methods).
 
-### Phase 3: Session & State (Testing Infrastructure)
-1. ~~`BrowserContext.storageState()`~~ DONE
-2. ~~`BrowserContext.setGeolocation()`~~ DONE
-3. ~~`Download.saveAs()` / `Download.path()`~~ DONE
-
-### Phase 4: Advanced Features
-1. ~~`Mouse` module~~ DONE
-2. ~~`FrameLocator` module~~ DONE
-3. ~~`Page.pdf()`~~ DONE
-4. ~~`Tracing` module~~ DONE
-
-### Phase 5: Completeness
+### Phase 5: Completeness (in progress)
 1. ~~Remaining Page query methods~~ DONE
 2. ~~`FileChooser` module~~ DONE
 3. `Clock` module
 4. `Video` module
+
+### Phase 6: Upgrade to Playwright 1.59.1
+
+#### 6a: Breaking Changes (must fix)
+1. Update `priv/static/package.json` to `playwright@1.59.1`, fix `engines.node` to `>=18`
+2. Update `mix.exs` version to `1.59.1-alpha.1`
+3. Run `npm install` in `priv/static/` and install new browser binaries
+4. Remove `Page.Accessibility` module — `accessibilitySnapshot` protocol command removed in 1.57
+5. Remove/migrate `Selectors` module — interface removed, replaced by `BrowserContext.registerSelectorEngine`
+6. Handle required timeouts — all `timeout` params changed from optional to required in protocol
+7. Rename `Frame.waitForTimeout` param from `timeout` to `waitTimeout`
+8. Remove `BrowserContext.backgroundPage` event binding (event removed)
+9. Handle `ContextOptions.recordHar` removal (now via `harStart`/`harExport`)
+10. Update `Serialization.ex` to support typed arrays (`SerializedValue.ta`)
+
+#### 6b: Deprecations
+1. Mark `Page.type/4`, `Frame.type/4`, `Locator.type/3` as deprecated (since 1.50)
+
+#### 6c: New APIs
+1. `Page.requests/1` — returns last 100 network requests (1.56)
+2. `Page.aria_snapshot/2` — shorthand for body aria snapshot (1.59)
+3. `Locator.describe/2` — annotate locator for traces/reports (1.53)
+4. `Frame.click`/`dblclick`/`dragAndDrop` `steps` option (1.54)
+5. Cookie `partitionKey` support in `BrowserContext` (1.53)
+6. `Page.emulateMedia` `contrast` option (1.56)
+7. Worker console event support (1.59)
+8. `BrowserType.launchPersistentContext` now also returns `browser` (1.57)
+
+#### 6d: Optional / Deferred
+1. `Page.screencast/1` — new Screencast ChannelOwner module (1.50)
+2. IndexedDB support in `storageState` (1.57)
+3. `Page.snapshotForAI` (internal, for MCP integrations)
 
 ---
 
@@ -670,7 +687,7 @@ Page: {
 ### Channel Commands Reference
 
 When implementing new methods, refer to the protocol definitions in:
-- `/home/tristan/sources/playwright/packages/protocol/src/channels.ts`
+- `/home/tristan/sources/playwright/packages/protocol/src/protocol.yml`
 
 ### Testing Patterns
 
