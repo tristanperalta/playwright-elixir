@@ -77,7 +77,18 @@ defmodule Playwright.Page do
   # ---------------------------------------------------------------------------
 
   @impl ChannelOwner
-  def init(%Page{session: session} = page, _intializer) do
+  def init(%Page{session: session} = page, initializer) do
+    # In Playwright >= 1.57, video is a property on the initializer, not an event
+    case initializer do
+      %{video: %{guid: guid}} ->
+        video_artifact = Channel.find(session, {:guid, guid})
+        video = Playwright.Video.new(video_artifact)
+        Playwright.Video.store(page.guid, video)
+
+      _ ->
+        :ok
+    end
+
     Channel.bind(session, {:guid, page.guid}, :close, fn event ->
       {:patch, %{event.target | is_closed: true}}
     end)
@@ -92,7 +103,8 @@ defmodule Playwright.Page do
     end)
 
     Channel.bind(session, {:guid, page.guid}, :viewport_size_changed, fn %{params: params, target: target} ->
-      {:patch, %{target | viewport_size: params.viewport_size}}
+      viewport = params[:viewport_size] || params[:viewportSize]
+      {:patch, %{target | viewport_size: viewport}}
     end)
 
     Channel.bind(session, {:guid, page.guid}, :video, fn %{params: %{artifact: artifact}} ->
@@ -165,11 +177,9 @@ defmodule Playwright.Page do
     params = %{source: script}
 
     case Channel.post(session, {:guid, page.guid}, :add_init_script, params) do
-      {:ok, _} ->
-        :ok
-
-      {:error, error} ->
-        {:error, error}
+      {:ok, _} -> :ok
+      {:error, error} -> {:error, error}
+      %{guid: _} -> :ok
     end
   end
 

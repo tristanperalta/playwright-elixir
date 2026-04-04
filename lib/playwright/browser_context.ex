@@ -61,17 +61,6 @@ defmodule Playwright.BrowserContext do
 
   The `expect_event/5` and `on/3` functions support the following event types:
 
-    - `:background_page`
-
-      Emitted when a new background page is created in the context. The event
-      target is a `Playwright.Page`.
-
-          ...
-
-      > NOTE:
-      >
-      > - Only works with Chromium browser's persistent context.
-
     - `:close`
 
       Emitted when the `Playwright.BrowserContext` is closed. The event target
@@ -185,8 +174,7 @@ defmodule Playwright.BrowserContext do
 
   @typedoc "Supported events"
   @type event ::
-          :background_page
-          | :close
+          :close
           | :page
           | :request
           | :request_failed
@@ -311,11 +299,9 @@ defmodule Playwright.BrowserContext do
     params = %{source: script}
 
     case Channel.post(session, {:guid, context.guid}, :add_init_script, params) do
-      {:ok, _} ->
-        :ok
-
-      {:error, error} ->
-        {:error, error}
+      {:ok, _} -> :ok
+      {:error, error} -> {:error, error}
+      %{guid: _} -> :ok
     end
   end
 
@@ -334,6 +320,7 @@ defmodule Playwright.BrowserContext do
 
   - `[Page.t()]`
   """
+  @doc deprecated: "backgroundPage event was removed in Playwright 1.57"
   @spec background_pages(t()) :: [Page.t()]
   def background_pages(%BrowserContext{}) do
     []

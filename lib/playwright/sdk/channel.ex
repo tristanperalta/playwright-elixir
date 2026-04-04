@@ -28,6 +28,7 @@ defmodule Playwright.SDK.Channel do
   end
 
   def post(session, {:guid, guid}, action, params \\ %{}) when is_binary(guid) when is_pid(session) do
+    params = Map.put_new(params, :timeout, 30_000)
     connection = Session.connection(session)
     message = Message.new(guid, action, params)
 

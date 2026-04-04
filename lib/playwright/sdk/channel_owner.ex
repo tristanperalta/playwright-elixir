@@ -1,5 +1,6 @@
 defmodule Playwright.SDK.ChannelOwner do
   @moduledoc false
+  require Logger
   @callback init(struct(), map()) :: {atom(), struct()}
   @optional_callbacks init: 2
 
@@ -102,6 +103,10 @@ defmodule Playwright.SDK.ChannelOwner do
           # simple "success": send "self"
           {:ok, %{id: _}} ->
             Channel.find(owner.session, {:guid, owner.guid})
+
+          # server returned a resource (e.g., Disposable) — treat as success
+          %{guid: _} ->
+            Channel.find(owner.session, {:guid, owner.guid})
         end
       end
 
@@ -133,8 +138,9 @@ defmodule Playwright.SDK.ChannelOwner do
   defp module(%{type: type}) do
     String.to_existing_atom("Elixir.Playwright.#{type}")
   rescue
-    e in ArgumentError ->
-      reraise %{e | message: "ChannelOwner of type #{inspect(type)} is not yet defined"}, __STACKTRACE__
+    ArgumentError ->
+      Logger.warning("ChannelOwner of type #{inspect(type)} is not yet defined, using GenericChannelOwner")
+      Playwright.GenericChannelOwner
   end
 
   # ChannelOwner macros

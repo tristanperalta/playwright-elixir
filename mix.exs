@@ -20,7 +20,7 @@ defmodule Playwright.MixProject do
       preferred_cli_env: [credo: :test, dialyzer: :test, docs: :docs, precommit: :test],
       source_url: @source_url,
       start_permanent: Mix.env() == :prod,
-      version: "1.49.1-alpha.2"
+      version: "1.59.1-alpha.1"
     ]
   end
 
@@ -123,13 +123,11 @@ defmodule Playwright.MixProject do
           Playwright.Locator,
           Playwright.Page,
           Playwright.JSHandle,
-          Playwright.Page.Accessibility,
           Playwright.Page.Locator,
           Playwright.RemoteBrowser,
           Playwright.Request,
           Playwright.Response,
           Playwright.Route,
-          Playwright.Selectors,
           Playwright.WebSocket,
           Playwright.Worker
         ],

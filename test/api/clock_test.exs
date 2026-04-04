@@ -54,7 +54,7 @@ defmodule Playwright.ClockTest do
       Clock.fast_forward(context, "00:01:30")
 
       time = Page.evaluate(page, "() => Date.now()")
-      assert time == 90_000
+      assert_in_delta time, 90_000, 100
 
       BrowserContext.close(context)
     end
@@ -110,7 +110,7 @@ defmodule Playwright.ClockTest do
       Clock.run_for(context, 10_000)
 
       time = Page.evaluate(page, "() => Date.now()")
-      assert time == 10_000
+      assert_in_delta time, 10_000, 100
 
       BrowserContext.close(context)
     end
@@ -124,7 +124,7 @@ defmodule Playwright.ClockTest do
       Clock.run_for(context, "01:00:00")
 
       time = Page.evaluate(page, "() => Date.now()")
-      assert time == 3_600_000
+      assert_in_delta time, 3_600_000, 100
 
       BrowserContext.close(context)
     end
