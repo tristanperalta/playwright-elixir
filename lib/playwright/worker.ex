@@ -4,6 +4,7 @@ defmodule Playwright.Worker do
   """
   use Playwright.SDK.ChannelOwner
 
+  @property :is_closed
   @property :url
 
   def init(%{session: session} = worker, _initializer) do

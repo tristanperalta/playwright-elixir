@@ -835,9 +835,12 @@ defmodule Playwright.Page do
 
   # ---
 
+  # Child frames are stored with the page as their catalog parent; the main
+  # frame (stored under the browser context) is looked up directly.
   @spec frames(t()) :: [Frame.t()]
-  def frames(%Page{} = page) do
-    Channel.list(page.session, {:guid, page.guid}, "Frame")
+  def frames(%Page{session: session} = page) do
+    main_frame = Channel.find(session, {:guid, page.main_frame.guid})
+    [main_frame | Channel.list(session, {:guid, page.guid}, "Frame")]
   end
 
   # ---

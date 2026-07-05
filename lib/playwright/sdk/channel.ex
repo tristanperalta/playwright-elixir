@@ -16,7 +16,7 @@ defmodule Playwright.SDK.Channel do
 
   def list(session, {:guid, guid}, type) do
     Catalog.list(Session.catalog(session), %{
-      parent: guid,
+      parent: %{guid: guid},
       type: type
     })
   end
